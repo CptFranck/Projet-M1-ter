@@ -57,7 +57,7 @@ public class AgentControl : MonoBehaviour
         
         if (collision.gameObject.tag == "Spawner" && state == 0)
         {
-            Debug.Log("MuffinTime");
+            //Debug.Log("MuffinTime");
             Destroy(gameObject);
         }
         else if (collision.gameObject.tag == "Agent")
