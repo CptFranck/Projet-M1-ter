@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e84223da9e50fab478f935bb3214a045
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - agent: {instanceID: 0}
+  - agentbis: {instanceID: 0}
+  - spawnerDoor: {instanceID: 0}
+  - spawnerScene: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
