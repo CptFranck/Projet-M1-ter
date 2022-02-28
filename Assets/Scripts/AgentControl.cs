@@ -43,10 +43,6 @@ public class AgentControl : MonoBehaviour
     public double Speed(double density)
     {
         var x = density;
-        /*if(x > 10)
-        {
-            return speed;
-        }*/
         return (.9/Mathf.Exp((float)x)+.05)*speed;
         //var x = -density / 2.5;
         //return (-1/ (1 + (Mathf.Exp((float)x) + 4.5)))+1.2;
