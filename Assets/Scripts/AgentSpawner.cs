@@ -11,6 +11,7 @@ public class AgentSpawner : MonoBehaviour
     public int id;
     public int index;
     public int MaxNumberAgent;
+    int numbAgents;
     public GameObject TextPrefab;
     
     public AgentControl agentPrefab;
@@ -25,6 +26,7 @@ public class AgentSpawner : MonoBehaviour
     void Start()
     {
         id = 0;
+        numbAgents = 0;
         index = 0;
         MaxNumberAgent = 500;
         agentSinger = Instantiate(agentPrefab, spawnerScene.transform.position, Quaternion.identity);
@@ -44,6 +46,7 @@ public class AgentSpawner : MonoBehaviour
             agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
             index++;
             id++;
+            numbAgents ++;
         }
         else
         {
@@ -67,6 +70,7 @@ public class AgentSpawner : MonoBehaviour
                 agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
                 index++;
                 id++;
+                numbAgents++;
             }
             else if (OneTime)
             {
@@ -85,6 +89,7 @@ public class AgentSpawner : MonoBehaviour
             agentClone[indexbis].target = spawnerDoor.transform.position;
             agentClone.RemoveAt(indexbis);
             index--;
+            numbAgents--;
         }
         else
         {
@@ -105,6 +110,7 @@ public class AgentSpawner : MonoBehaviour
                 agentClone[indexbis].target = spawnerDoor.transform.position;
                 agentClone.RemoveAt(indexbis);
                 index--;
+                numbAgents --;
             }
             else if(OneTime)
             {
@@ -113,5 +119,8 @@ public class AgentSpawner : MonoBehaviour
                 floatingText.GetComponent<TextMeshProUGUI>().text = "You can't delete agent !";
             }
         }
+    }
+    public int getPersonCount(){
+        return numbAgents;
     }
 }

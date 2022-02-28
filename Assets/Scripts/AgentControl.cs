@@ -31,11 +31,9 @@ public class AgentControl : MonoBehaviour
 
         if (type == "public") 
         {
-
             //\left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
             agent.GetComponent<NavMeshAgent>().SetDestination(target);
             this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
-
         }
 
     }
