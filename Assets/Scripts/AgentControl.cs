@@ -5,18 +5,17 @@ using UnityEngine.AI;
 
 public class AgentControl : MonoBehaviour
 {
+    public GameObject agent;
+
     public int id;
     public int state;
     public float speed;
     public string type;
     public Vector3 target;
-    public GameObject agent;
     
     public List<int> contactId;
     public int contactBoxNumber;
     public int contactCapsuleNumber;
-    public BoxCollider BoxCollider;
-    public CapsuleCollider CapsuleCollider;
 
     void Start()
     {
@@ -48,7 +47,7 @@ public class AgentControl : MonoBehaviour
         //return (-1/ (1 + (Mathf.Exp((float)x) + 4.5)))+1.2;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void TriggerEnter(Collider collision, string type)
     {
         
         if (collision.gameObject.tag == "Spawner" && state == 0)
@@ -60,45 +59,46 @@ public class AgentControl : MonoBehaviour
         {
             int idbis = collision.gameObject.GetComponent<AgentControl>().id;
 
-            if (collision is BoxCollider)
+            if (type == "Box" /*&& collision.gameObject.GetComponent<BoxColliderbis>().type == "Box"*/)
             {
-                //Debug.Log(id + " -> box " + idbis);
+                //Debug.Log(" Box de " + id + " a hit capsule de " + idbis);
                 contactBoxNumber++;
 
-            }
-            if (!contactId.Contains(idbis))
+            } else if (type == "Caps" /*&& collision.gameObject.GetComponent<CapsuleColliderbis>().type == "Caps"*/)
             {
-                if (collision is CapsuleCollider)
+                if (!contactId.Contains(idbis))
                 {
-                    //Debug.Log(id + " -> capsule " + idbis);
+                    //Debug.Log(" Capsule de " + id + " a hit capsule de " + idbis);
                     contactId.Add(idbis);
                     contactCapsuleNumber++;
+                    
                 }
             }
         }
     }
-    private void OnTriggerExit(Collider collision)
+    public void TriggerExit(Collider collision, string type)
     {
         if (collision.gameObject.tag == "Agent")
         {
-            /*if (collision is BoxCollider)
+            
+            int idbis = collision.gameObject.GetComponent<AgentControl>().id;
+
+            if (type == "Box" /*&& collision.gameObject.GetComponent<BoxColliderbis>().type == "Box"*/)
             {
+                //Debug.Log(" box de " + id + " a hit " + idbis);
                 contactBoxNumber--;
 
-            }*/
-
-            int idbis = collision.gameObject.GetComponent<AgentControl>().id;
-            contactId.RemoveAt(contactId.IndexOf(idbis));
-            contactCapsuleNumber--;
-            
-            /*if (contactId.Contains(idbis))
-            {         
-                if (collision is CapsuleCollider)
+            }
+            else if (type == "Caps" /*&& collision.gameObject.GetComponent<CapsuleColliderbis>().type == "Caps"*/)
+            {
+                
+                if (contactId.Contains(idbis))
                 {
-                    
-
+                    //Debug.Log(" capsule de " + id + " a hit " + idbis);
+                    contactId.RemoveAt(contactId.IndexOf(idbis));
+                    contactCapsuleNumber--;
                 }
-            }*/
+            }
         }
     }
 }

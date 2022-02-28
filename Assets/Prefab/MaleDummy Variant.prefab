@@ -250,7 +250,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8654250720420973338, guid: 34115fd4eff069845a47d22ce756724e, type: 3}
   m_PrefabInstance: {fileID: 2482486372294538244}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &7149300351928045808
+--- !u!54 &6435112568558652223
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -266,7 +266,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &-515070709139619646
+--- !u!65 &1105411212648802962
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -277,9 +277,9 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 2}
+  m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 0, y: 1, z: 0}
---- !u!136 &564139219827297700
+--- !u!136 &7430707010491119845
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -287,10 +287,10 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6514882502979583774}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.22
-  m_Height: 1.85
+  m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.95, z: 0}
 --- !u!195 &1146545872015243285
@@ -315,6 +315,36 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &6544173601579343921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6514882502979583774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2719924384206914fb0c2b26d7db57af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: 6514882502979583774}
+  type: 
+  CapsuleCollider: {fileID: 7430707010491119845}
+--- !u!114 &7782800660681258150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6514882502979583774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16a1b756f6ac8a044a60a7478f427969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: 6514882502979583774}
+  type: 
+  BoxCollider: {fileID: 1105411212648802962}
 --- !u!114 &7839442615085477401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,14 +357,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febb323a10f01594ba667cdb928a7c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agent: {fileID: 6514882502979583774}
   id: 0
   state: 0
   speed: 0
   type: 
   target: {x: 0, y: 0, z: 0}
-  agent: {fileID: 6514882502979583774}
   contactId: 
   contactBoxNumber: 0
   contactCapsuleNumber: 0
-  BoxCollider: {fileID: -515070709139619646}
-  CapsuleCollider: {fileID: 564139219827297700}
