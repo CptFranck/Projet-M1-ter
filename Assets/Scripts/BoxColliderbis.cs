@@ -14,9 +14,8 @@ public class BoxColliderbis : MonoBehaviour
     {
         type = "Box";
         BoxCollider.isTrigger = true;
-        BoxCollider.center = new Vector3(0,1,0);
-        BoxCollider.size = new Vector3(2, 2, 2);
-        //BoxCollider.center = new Vector3(1, 2, 1);
+        BoxCollider.center = new Vector3(0,0,0);
+        BoxCollider.size = new Vector3(1, 2, 1);
     }
     private void OnTriggerEnter(Collider collision)
     {
