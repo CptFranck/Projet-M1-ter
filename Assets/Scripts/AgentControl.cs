@@ -28,36 +28,17 @@ public class AgentControl : MonoBehaviour
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
         speed = this.GetComponent<NavMeshAgent>().speed;
-        agent.GetComponent<NavMeshAgent>().avoidancePriority = Random.Range(1,100);
+        //agent.GetComponent<NavMeshAgent>().avoidancePriority = Random.Range(1,100);
     }
     
     void Update()
     {
         if (type == "public") 
         {
-            //left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
-
-
-            /*if (contactBoxNumber > comfortLevel)
-            {
-                target = new Vector3(agent.GetComponent<NavMeshAgent>().transform.position.x,
-                                     agent.GetComponent<NavMeshAgent>().transform.position.y,
-                          -Mathf.Abs(agent.GetComponent<NavMeshAgent>().transform.position.z - 10));
-                this.GetComponent<NavMeshAgent>().speed = 1;
-            }
-            if (contactBoxNumber == comfortLevel)
-            {
-                target = agent.GetComponent<NavMeshAgent>().transform.position;
-            }
-            if (contactBoxNumber < oldcontactBoxNumber)
-            {
-                target = this.scene;
-            }*/
             //distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position,target);
             //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
             agent.GetComponent<NavMeshAgent>().SetDestination(target);
             this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
-            //oldcontactBoxNumber = contactBoxNumber;
 
         }
     }
@@ -98,7 +79,7 @@ public class AgentControl : MonoBehaviour
             }
         }
     }
-        public void TriggerExit(Collider collision, string type)
+    public void TriggerExit(Collider collision, string type)
     {
         if (collision.gameObject.tag == "Agent")
         {
