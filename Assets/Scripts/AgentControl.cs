@@ -5,112 +5,120 @@ using UnityEngine.AI;
 
 public class AgentControl : MonoBehaviour
 {
+    public GameObject agent;
+
     public int id;
     public int state;
+    public int comfortLevel;
+    
     public float speed;
+    
     public string type;
+    
+    public Vector3 scene;
     public Vector3 target;
-    public GameObject agent;
     
     public List<int> contactId;
     public int contactBoxNumber;
+    public int oldcontactBoxNumber;
     public int contactCapsuleNumber;
-    public BoxCollider BoxCollider;
-    public CapsuleCollider CapsuleCollider;
-
-    int nbCollisions;
 
     void Start()
     {
-        nbCollisions = 0;
-        contactBoxNumber = 0;
-        contactCapsuleNumber = 0;
         state = 1;
+        comfortLevel = Random.Range(5, 15);
+        contactBoxNumber = 0;
+        oldcontactBoxNumber = 0;
+        contactCapsuleNumber = 0;
+        
         speed = this.GetComponent<NavMeshAgent>().speed;
     }
         // Update is called once per frame
-        void Update()
+    void Update()
     {
-        Debug.Log(nbCollisions);
         if (type == "public") 
         {
-            //\left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
+            //left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
+
+            
+            /*if (contactBoxNumber > comfortLevel)
+            {
+                target = new Vector3(agent.GetComponent<NavMeshAgent>().transform.position.x,
+                                     agent.GetComponent<NavMeshAgent>().transform.position.y,
+                          -Mathf.Abs(agent.GetComponent<NavMeshAgent>().transform.position.z - 10));
+                this.GetComponent<NavMeshAgent>().speed = 1;
+            }
+            if (contactBoxNumber == comfortLevel)
+            {
+                target = agent.GetComponent<NavMeshAgent>().transform.position;
+            }
+            if (contactBoxNumber < oldcontactBoxNumber)
+            {
+                target = this.scene;
+            }*/
             agent.GetComponent<NavMeshAgent>().SetDestination(target);
             this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
-        }
+            //oldcontactBoxNumber = contactBoxNumber;
 
+        }
     }
     
     public double Speed(double density)
     {
         var x = density;
-        /*if(x > 10)
-        {
-            return speed;
-        }*/
         return (.9/Mathf.Exp((float)x)+.05)*speed;
         //var x = -density / 2.5;
         //return (-1/ (1 + (Mathf.Exp((float)x) + 4.5)))+1.2;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void TriggerEnter(Collider collision, string type)
     {
-        
         if (collision.gameObject.tag == "Spawner" && state == 0)
         {
-            Debug.Log("MuffinTime");
             Destroy(gameObject);
         }
         else if (collision.gameObject.tag == "Agent")
         {
-            int idbis = collision.gameObject.GetComponent<AgentControl>().id;
+            int idbis = collision.gameObject.GetComponentInParent<AgentControl>().id; //GetComponent<AgentControl>().id;
 
-            if (collision is BoxCollider)
+            if (idbis != id)
             {
-                //Debug.Log(id + " -> box " + idbis);
-                contactBoxNumber++;
-
-            }
-            if (!contactId.Contains(idbis))
-            {
-                if (collision is CapsuleCollider)
+                if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
-                    //Debug.Log(id + " -> capsule " + idbis);
-                    contactId.Add(idbis);
-                    contactCapsuleNumber++;
+                    contactBoxNumber++;
+                }
+                if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
+                {
+                    if (!contactId.Contains(idbis))
+                    {
+                        contactId.Add(idbis);
+                        contactCapsuleNumber++;
+                    }
                 }
             }
-            nbCollisions++;
         }
     }
-
-    private void OnTriggerExit(Collider collision)
+        public void TriggerExit(Collider collision, string type)
     {
         if (collision.gameObject.tag == "Agent")
         {
-            /*if (collision is BoxCollider)
+            int idbis = collision.gameObject.GetComponentInParent<AgentControl>().id; //.GetComponent<AgentControl>().id;
+
+            if (idbis != id)
             {
-                contactBoxNumber--;
-
-            }*/
-
-            int idbis = collision.gameObject.GetComponent<AgentControl>().id;
-            contactId.RemoveAt(contactId.IndexOf(idbis));
-            contactCapsuleNumber--;
-            
-            /*if (contactId.Contains(idbis))
-            {         
-                if (collision is CapsuleCollider)
+                if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
-                    
-
+                    contactBoxNumber--;
                 }
-            }*/
-            nbCollisions--;
+                if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
+                {
+                    if (contactId.Contains(idbis))
+                    {
+                        contactId.RemoveAt(contactId.IndexOf(idbis));
+                        contactCapsuleNumber--;
+                    }
+                }
+            }
         }
-    }
-
-    public int getNbCollisions(){
-        return nbCollisions;
     }
 }

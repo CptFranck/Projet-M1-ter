@@ -31,6 +31,7 @@ public class AgentSpawner : MonoBehaviour
         MaxNumberAgent = 500;
         agentSinger = Instantiate(agentPrefab, spawnerScene.transform.position, Quaternion.identity);
         agentSinger.type = "singer";
+        agentSinger.scene = agentSinger.transform.position;
         agentSinger.target = agentSinger.transform.position;
         agentSinger.GetComponent<NavMeshAgent>().SetDestination(agentSinger.target);
     }
@@ -43,6 +44,7 @@ public class AgentSpawner : MonoBehaviour
             agentClone[index].id = id;
             agentClone[index].type = "public";
             int randNumbrer = Random.Range(0, PointOfInterest.Length);
+            agentClone[index].scene = PointOfInterest[randNumbrer].transform.position;
             agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
             index++;
             id++;
@@ -67,6 +69,7 @@ public class AgentSpawner : MonoBehaviour
                 int randNumbrer = Random.Range(0, PointOfInterest.Length);
                 agentClone[index].id = id;
                 agentClone[index].type = "public";
+                agentClone[index].scene = PointOfInterest[randNumbrer].transform.position;
                 agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
                 index++;
                 id++;
