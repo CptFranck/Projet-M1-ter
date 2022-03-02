@@ -6,13 +6,24 @@ using UnityEngine.UI;
 public class StatsDisplay : MonoBehaviour
 {
     public GameObject statsUIDisplay;
+    public GameObject floor;
     public Text nbPersonTxt;
+    public Text nbContactsTxt;
+    public Text densiteTxt;
     AgentSpawner personCount;
+    AgentControl personContacts;
+    
+    float surface;
+    float densite;
     // Start is called before the first frame update
     void Start()
     {
+        surface = 0;
+        densite = 0f;
+        
         statsUIDisplay.SetActive(false);
         personCount = GameObject.FindObjectOfType(typeof(AgentSpawner)) as AgentSpawner;
+        personContacts = GameObject.FindObjectOfType(typeof(AgentControl)) as AgentControl;
     }
 
     // Update is called once per frame
@@ -29,22 +40,15 @@ public class StatsDisplay : MonoBehaviour
     public void UpdateUI(){
         //Change le texte de l'interface pour le nombre de personnes
         nbPersonTxt.text = "Nb de personnes : " + personCount.getPersonCount();
+        // nbContactsTxt.text = "Nb de contacts en moyenne : " + personContacts.getNbCollisions();
+        densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(floor);
+    
     }
 
-    float CalculateSurfaceAre(Mesh mesh){
-        var triangles = mesh.triangles;
-        var vertices = mesh.vertices;
-
-        double sum = 0.0;
-
-        for(int i = 0; i < triangles.Length; i += 3) {
-            Vector3 corner = vertices[triangles[i]];
-            Vector3 a = vertices[triangles[i + 1]] - corner;
-            Vector3 b = vertices[triangles[i + 2]] - corner;
-
-            sum += Vector3.Cross(a, b).magnitude;
-        }
-
-        return (float)(sum/2.0);
-        }
+    float CalculateDensity(GameObject floor){
+        surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z;
+        densite =  Mathf.Round((personCount.getPersonCount() / surface) *100f) / 100f; //à deux chiffres après la virgule près        
+        Debug.Log(densite);
+        return densite;
+    }
 }

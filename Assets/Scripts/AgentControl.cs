@@ -18,8 +18,11 @@ public class AgentControl : MonoBehaviour
     public BoxCollider BoxCollider;
     public CapsuleCollider CapsuleCollider;
 
+    int nbCollisions;
+
     void Start()
     {
+        nbCollisions = 0;
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
         state = 1;
@@ -28,7 +31,7 @@ public class AgentControl : MonoBehaviour
         // Update is called once per frame
         void Update()
     {
-
+        Debug.Log(nbCollisions);
         if (type == "public") 
         {
             //\left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
@@ -77,8 +80,10 @@ public class AgentControl : MonoBehaviour
                     contactCapsuleNumber++;
                 }
             }
+            nbCollisions++;
         }
     }
+
     private void OnTriggerExit(Collider collision)
     {
         if (collision.gameObject.tag == "Agent")
@@ -101,6 +106,11 @@ public class AgentControl : MonoBehaviour
 
                 }
             }*/
+            nbCollisions--;
         }
+    }
+
+    public int getNbCollisions(){
+        return nbCollisions;
     }
 }
