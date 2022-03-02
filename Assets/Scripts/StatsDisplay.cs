@@ -48,7 +48,6 @@ public class StatsDisplay : MonoBehaviour
     float CalculateDensity(GameObject floor){
         surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z;
         densite =  Mathf.Round((personCount.getPersonCount() / surface) *100f) / 100f; //à deux chiffres après la virgule près        
-        Debug.Log(densite);
         return densite;
     }
 }

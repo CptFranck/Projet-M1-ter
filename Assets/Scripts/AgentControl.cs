@@ -9,10 +9,10 @@ public class AgentControl : MonoBehaviour
 
     public int id;
     public int state;
-    public int comfortLevel;
     
     public float speed;
-    
+    public float distanceTarget;
+
     public string type;
     
     public Vector3 scene;
@@ -20,27 +20,24 @@ public class AgentControl : MonoBehaviour
     
     public List<int> contactId;
     public int contactBoxNumber;
-    public int oldcontactBoxNumber;
     public int contactCapsuleNumber;
 
     void Start()
     {
         state = 1;
-        comfortLevel = Random.Range(5, 15);
         contactBoxNumber = 0;
-        oldcontactBoxNumber = 0;
         contactCapsuleNumber = 0;
-        
         speed = this.GetComponent<NavMeshAgent>().speed;
+        agent.GetComponent<NavMeshAgent>().avoidancePriority = Random.Range(1,100);
     }
-        // Update is called once per frame
+    
     void Update()
     {
         if (type == "public") 
         {
             //left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
 
-            
+
             /*if (contactBoxNumber > comfortLevel)
             {
                 target = new Vector3(agent.GetComponent<NavMeshAgent>().transform.position.x,
@@ -56,6 +53,8 @@ public class AgentControl : MonoBehaviour
             {
                 target = this.scene;
             }*/
+            //distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position,target);
+            //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
             agent.GetComponent<NavMeshAgent>().SetDestination(target);
             this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
             //oldcontactBoxNumber = contactBoxNumber;
@@ -66,9 +65,10 @@ public class AgentControl : MonoBehaviour
     public double Speed(double density)
     {
         var x = density;
-        return (.9/Mathf.Exp((float)x)+.05)*speed;
-        //var x = -density / 2.5;
-        //return (-1/ (1 + (Mathf.Exp((float)x) + 4.5)))+1.2;
+        return ((.95/Mathf.Exp((float)x))+.05)*speed;
+        // 0.95/exp(x) + 0.05 évolution de la vitesse en m/s
+        // Au dela de 5 contacts, la vitesse stagne à 0.2 m/s
+        // 
     }
 
     public void TriggerEnter(Collider collision, string type)
