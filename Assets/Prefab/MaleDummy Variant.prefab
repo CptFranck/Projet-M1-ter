@@ -490,6 +490,7 @@ MonoBehaviour:
   agent: {fileID: 6514882502979583774}
   id: 0
   state: 0
+  comfortLevel: 0
   speed: 0
   type: 
   target: {x: 0, y: 0, z: 0}

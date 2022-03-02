@@ -9,29 +9,57 @@ public class AgentControl : MonoBehaviour
 
     public int id;
     public int state;
+    public int comfortLevel;
+    
     public float speed;
+    
     public string type;
+    
+    public Vector3 scene;
     public Vector3 target;
     
     public List<int> contactId;
     public int contactBoxNumber;
+    public int oldcontactBoxNumber;
     public int contactCapsuleNumber;
 
     void Start()
     {
-        contactBoxNumber = 0;
-        contactCapsuleNumber = 0;
         state = 1;
+        comfortLevel = Random.Range(5, 15);
+        contactBoxNumber = 0;
+        oldcontactBoxNumber = 0;
+        contactCapsuleNumber = 0;
+        
         speed = this.GetComponent<NavMeshAgent>().speed;
     }
         // Update is called once per frame
-        void Update()
+    void Update()
     {
         if (type == "public") 
         {
-            //\left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
+            //left(-1/(1+\exp(-x\cdot2.5+4.5))\right)+1.2
+
+            
+            /*if (contactBoxNumber > comfortLevel)
+            {
+                target = new Vector3(agent.GetComponent<NavMeshAgent>().transform.position.x,
+                                     agent.GetComponent<NavMeshAgent>().transform.position.y,
+                          -Mathf.Abs(agent.GetComponent<NavMeshAgent>().transform.position.z - 10));
+                this.GetComponent<NavMeshAgent>().speed = 1;
+            }
+            if (contactBoxNumber == comfortLevel)
+            {
+                target = agent.GetComponent<NavMeshAgent>().transform.position;
+            }
+            if (contactBoxNumber < oldcontactBoxNumber)
+            {
+                target = this.scene;
+            }*/
             agent.GetComponent<NavMeshAgent>().SetDestination(target);
             this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
+            //oldcontactBoxNumber = contactBoxNumber;
+
         }
     }
     
@@ -43,17 +71,10 @@ public class AgentControl : MonoBehaviour
         //return (-1/ (1 + (Mathf.Exp((float)x) + 4.5)))+1.2;
     }
 
-    /*Debug.Log("________________________");
-    Debug.Log(collision.GetType());
-    Debug.Log(typeof(BoxCollider));
-    Debug.Log(collision.GetType() != typeof(BoxCollider));
-    Debug.Log("________________________");*/
     public void TriggerEnter(Collider collision, string type)
     {
-        
         if (collision.gameObject.tag == "Spawner" && state == 0)
         {
-            //Debug.Log("MuffinTime");
             Destroy(gameObject);
         }
         else if (collision.gameObject.tag == "Agent")
@@ -64,18 +85,12 @@ public class AgentControl : MonoBehaviour
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
-                    //Debug.Log("Box");
-                    //Debug.Log(" Box de " + id + " a hit capsule de " + idbis);
                     contactBoxNumber++;
                 }
-                
-
                 if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
                 {
-                    //Debug.Log("Caps");
                     if (!contactId.Contains(idbis))
                     {
-                        //Debug.Log(" Capsule de " + id + " a hit capsule de " + idbis);
                         contactId.Add(idbis);
                         contactCapsuleNumber++;
                     }
@@ -93,14 +108,12 @@ public class AgentControl : MonoBehaviour
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
-                    //Debug.Log(" box de " + id + " a hit " + idbis);
                     contactBoxNumber--;
                 }
                 if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
                 {
                     if (contactId.Contains(idbis))
                     {
-                        //Debug.Log(" capsule de " + id + " a hit " + idbis);
                         contactId.RemoveAt(contactId.IndexOf(idbis));
                         contactCapsuleNumber--;
                     }
