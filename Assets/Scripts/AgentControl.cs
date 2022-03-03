@@ -121,4 +121,8 @@ public class AgentControl : MonoBehaviour
             }
         }
     }
+
+    public int getCapsCollisions(){
+        return contactCapsuleNumber;
+    }
 }
