@@ -39,7 +39,7 @@ public class StatsDisplay : MonoBehaviour
 
     public void UpdateUI(){
         //Change le texte de l'interface pour le nombre de personnes
-        nbPersonTxt.text = "Nb de personnes : " + personCount.getPersonCount();
+        nbPersonTxt.text = "Nb de personnes : " + personCount.GetPersonCount();
         // nbContactsTxt.text = "Nb de contacts en moyenne : " + personContacts.getNbCollisions();
         densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(floor);
     
@@ -47,7 +47,7 @@ public class StatsDisplay : MonoBehaviour
 
     float CalculateDensity(GameObject floor){
         surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z;
-        densite =  Mathf.Round((personCount.getPersonCount() / surface) *100f) / 100f; //à deux chiffres après la virgule près        
+        densite =  Mathf.Round((personCount.GetPersonCount() / surface) *100f) / 100f; //à deux chiffres après la virgule près        
         return densite;
     }
 }

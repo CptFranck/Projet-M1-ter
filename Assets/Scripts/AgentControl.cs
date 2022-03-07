@@ -7,9 +7,9 @@ public class AgentControl : MonoBehaviour
 {
     public GameObject agent;
 
-    public int id;
+    public int id; 
     public int state;
-    
+
     public float speed;
     public float distanceTarget;
 
@@ -27,10 +27,11 @@ public class AgentControl : MonoBehaviour
         state = 1;
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
-        speed = this.GetComponent<NavMeshAgent>().speed;
-        //agent.GetComponent<NavMeshAgent>().avoidancePriority = Random.Range(1,100);
+        speed = 3.5F;
+        this.GetComponent<NavMeshAgent>().speed = speed;
+        //agent.GetComponent<NavMeshAgent>().avoidancePriority = Random.Range(50,65);
     }
-    
+
     void Update()
     {
         if (type == "public") 
@@ -42,14 +43,12 @@ public class AgentControl : MonoBehaviour
 
         }
     }
-    
     public double Speed(double density)
     {
         var x = density;
         return ((.95/Mathf.Exp((float)x))+.05)*speed;
         // 0.95/exp(x) + 0.05 évolution de la vitesse en m/s
         // Au dela de 5 contacts, la vitesse stagne à 0.2 m/s
-        // 
     }
 
     public void TriggerEnter(Collider collision, string type)
