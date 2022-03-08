@@ -21,7 +21,7 @@ public class StatsDisplay : MonoBehaviour
         surface = 0;
         densite = 0f;
         
-        statsUIDisplay.SetActive(false);
+        statsUIDisplay.SetActive(true);
         personCount = GameObject.FindObjectOfType(typeof(AgentSpawner)) as AgentSpawner;
         personContacts = GameObject.FindObjectOfType(typeof(AgentControl)) as AgentControl;
     }

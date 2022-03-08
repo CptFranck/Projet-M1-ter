@@ -9,6 +9,8 @@ public class AgentControl : MonoBehaviour
 
     public int id; 
     public int state;
+    public int weight;
+    public bool priorityChanged;
 
     public float speed;
     public float distanceTarget;
@@ -17,7 +19,8 @@ public class AgentControl : MonoBehaviour
     
     public Vector3 scene;
     public Vector3 target;
-    
+    public Vector3 oldTarget;
+
     public List<int> contactId;
     public int contactBoxNumber;
     public int contactCapsuleNumber;
@@ -25,22 +28,58 @@ public class AgentControl : MonoBehaviour
     void Start()
     {
         state = 1;
+        weight = 0;
+        priorityChanged = false;
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
         speed = 3.5F;
-        this.GetComponent<NavMeshAgent>().speed = speed;
-        //agent.GetComponent<NavMeshAgent>().avoidancePriority = Random.Range(50,65);
+        agent.GetComponent<NavMeshAgent>().speed = speed;
+        agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
     }
 
     void Update()
     {
         if (type == "public") 
         {
-            //distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position,target);
-            //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
-            agent.GetComponent<NavMeshAgent>().SetDestination(target);
-            this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
+            distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position, target);
+            /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
+               agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
+            {
+                agent.GetComponent<NavMeshAgent>().avoidancePriority = 45;
+            } 
+            else
+            {
+                agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+            }*/
+            if (contactBoxNumber > 8)
+            {
+                weight = 1;
+            }
+            else
+            {
+                weight = 0;
+            }
+            agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber + weight);
 
+            if (state == 1 && (agent.GetComponent<NavMeshAgent>().stoppingDistance * 0.95) <= distanceTarget && distanceTarget <= (agent.GetComponent<NavMeshAgent>().stoppingDistance * 1.05))
+            {
+                //target = agent.GetComponent<NavMeshAgent>().transform.position;
+                agent.GetComponent<NavMeshAgent>().avoidancePriority = 60;
+                priorityChanged = true;
+            }
+            else if(priorityChanged)
+            {
+                agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+                priorityChanged = false;
+            }
+
+            if (oldTarget != target)
+            {
+                agent.GetComponent<NavMeshAgent>().SetDestination(target);
+            }
+            oldTarget = target;
+            //agent.GetComponent<NavMeshAgent>().speed += .5F;
+            //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
         }
     }
     public double Speed(double density)

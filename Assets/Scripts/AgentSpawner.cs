@@ -24,7 +24,6 @@ public class AgentSpawner : MonoBehaviour
     public GameObject spawnerScene;
     public GameObject[] PointOfInterest;
 
-    // Start is called before the first frame update
     void Start()
     {
         id = 0;
@@ -43,7 +42,7 @@ public class AgentSpawner : MonoBehaviour
     public int SelectWithPurcent(PercentBox percentTable)
     {
         float r;
-        int index = 0;
+        int i = 0;
         
         do
         {
@@ -52,45 +51,14 @@ public class AgentSpawner : MonoBehaviour
 
         while (r > 0)
         {
-            if (nbAgents <= 100)
-            {
-                r -= percentTable.percent_1[index];
-            }
-            else if (nbAgents <= 200) {
-                r -= percentTable.percent_2[index];
-            }
-            else if (nbAgents <= 300)
-            {
-                r -= percentTable.percent_3[index];
-            }
-            else if (nbAgents <= 300)
-            {
-                r -= percentTable.percent_4[index];
-            }
-            index++;
-        }
-        index--;
 
-        if (nbAgents <= 100)
-        {
-            return percentTable.stopDistence_1[index];
+            r -= percentTable.percent[i];
+            i++;
         }
-        else if (nbAgents <= 200)
-        {
-            return percentTable.stopDistence_2[index];
-        }
-        else if (nbAgents <= 300)
-        {
-            return percentTable.stopDistence_3[index];
-        }
-        else if (nbAgents <= 300)
-        {
-            return percentTable.stopDistence_4[index];
-        } else
-        {
-            Debug.Log("bug");
-            return 0;
-        }
+        i--;
+
+        return percentTable.stopDistence[i];
+        
     }
 
     public void AddAgent()
@@ -139,15 +107,16 @@ public class AgentSpawner : MonoBehaviour
 
     public void DeleteAgent()
     {
-        if(index > 0) { 
+        
+        if (index > 0) { 
             var indexbis = Random.Range(0, index);
             agentClone[indexbis].state = 0;
             agentClone[indexbis].target = spawnerDoor.transform.position;
-            agentClone[index].GetComponent<NavMeshAgent>().stoppingDistance = 0;
+            agentClone[indexbis].GetComponent<NavMeshAgent>().stoppingDistance = 0;
             agentClone.RemoveAt(indexbis);
             nbAgents--;
             index--;
-            
+
         }
         else
         {
