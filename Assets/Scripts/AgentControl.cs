@@ -30,6 +30,7 @@ public class AgentControl : MonoBehaviour
 
     void Start()
     {
+        // initialisation d'agent
         state = 1;
         weight = 0;
         cooldown = 0;
@@ -105,17 +106,23 @@ public class AgentControl : MonoBehaviour
             {
                 weight = 0;
             }*/
+
+            // Modification de la vitesse en temps réel
             agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber + weight);
 
+            // Modification de la destination sur l'objectif a évolué
             if (oldTarget != target)
             {
                 agent.GetComponent<NavMeshAgent>().SetDestination(target);
             }
             oldTarget = target;
+
             //agent.GetComponent<NavMeshAgent>().speed += .5F;
             //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
         }
     }
+    // Speed cherche à renvoyer une vitesse que doit avoir un agent en fonction du
+    // nombre de contact direct qu'il a avec d'autres agents
     public double Speed(double density)
     {
         var x = density;
@@ -124,6 +131,13 @@ public class AgentControl : MonoBehaviour
         // Au dela de 5 contacts, la vitesse stagne à 0.2 m/s
     }
 
+    // TriggerEnter correspond à la réaction d'un agent lors d'un contact avec un
+    // gameObeject, ici son but et de detecter la sortie si son étant est 0, ou de
+    // detecter un autre agent et tout de suite après l'enregistrer afin de ne pas
+    // comptabiliser plusieur fois le même agents alors qu'il est tjrs en contact,
+    // le tout en mettant à jours le nombre de contact direct et indirect des agents
+    // entre eux
+    
     public void TriggerEnter(Collider collision, string type)
     {
         if (collision.gameObject.tag == "Spawner" && state == 0)
@@ -132,8 +146,7 @@ public class AgentControl : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Agent")
         {
-            int idbis = collision.gameObject.GetComponentInParent<AgentControl>().id; //GetComponent<AgentControl>().id;
-
+            int idbis = collision.gameObject.GetComponentInParent<AgentControl>().id; 
             if (idbis != id)
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
@@ -151,6 +164,12 @@ public class AgentControl : MonoBehaviour
             }
         }
     }
+
+    // TriggerExit correspond à la réaction d'un agent lors d'un contact "de sortie"
+    // avec un gameObeject, ici son but et de detecter la sortie d'un autre agent
+    // déjà enregistrer afin de pouvoir le recomptabiliser si jamais il revenait au
+    // contact de cet agent ayant déjà quitter le collider le tout en mettant à jours
+    // le nombre de contact direct et indirect des agents entre eux
     public void TriggerExit(Collider collision, string type)
     {
         if (collision.gameObject.tag == "Agent")
