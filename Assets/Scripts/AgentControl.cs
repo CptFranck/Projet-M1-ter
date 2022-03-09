@@ -13,7 +13,10 @@ public class AgentControl : MonoBehaviour
     public bool priorityChanged;
 
     public float speed;
+    public float cooldown;
+    public float countdown;
     public float distanceTarget;
+    public float oldDistanceTarget;
 
     public string type;
     
@@ -29,19 +32,22 @@ public class AgentControl : MonoBehaviour
     {
         state = 1;
         weight = 0;
+        cooldown = 0;
+        countdown = 0;
+        oldDistanceTarget = 0;
         priorityChanged = false;
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
         speed = 3.5F;
         agent.GetComponent<NavMeshAgent>().speed = speed;
-        agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+        agent.GetComponent<NavMeshAgent>().avoidancePriority = 50; //Random.Range(50, 60);
     }
 
     void Update()
     {
         if (type == "public") 
         {
-            distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position, target);
+            
             /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
                agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
             {
@@ -51,6 +57,46 @@ public class AgentControl : MonoBehaviour
             {
                 agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
             }*/
+            
+            if(state == 1)
+            {
+                //distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position, target);
+                /*if (countdown != -1)
+                {
+                    if (countdown == 5){
+                        
+                        if (Mathf.Abs(oldDistanceTarget - distanceTarget) < 1)
+                        {
+                            countdown = 0;
+                            target = agent.GetComponent<NavMeshAgent>().transform.position;
+                            //agent.GetComponent<NavMeshAgent>().isStopped = true;
+                            agent.GetComponent<NavMeshAgent>().avoidancePriority = 55;
+                        }
+                        else
+                        {
+                            countdown = 0;
+                            oldDistanceTarget = distanceTarget;
+                        }
+                    }
+                    else
+                    {
+                        cooldown += Time.deltaTime;
+                        if(cooldown >= 1f)
+                        {
+                            cooldown = 0;
+                            countdown++;
+                            //Debug.Log("countdown : " + countdown + "s");
+                        }
+                        
+                    }
+                }*/
+            } 
+            else
+            {
+                //agent.GetComponent<NavMeshAgent>().isStopped = false;
+                //agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+            }
+            /*
             if (contactBoxNumber > 8)
             {
                 weight = 1;
@@ -58,20 +104,8 @@ public class AgentControl : MonoBehaviour
             else
             {
                 weight = 0;
-            }
+            }*/
             agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber + weight);
-
-            if (state == 1 && (agent.GetComponent<NavMeshAgent>().stoppingDistance * 0.95) <= distanceTarget && distanceTarget <= (agent.GetComponent<NavMeshAgent>().stoppingDistance * 1.05))
-            {
-                //target = agent.GetComponent<NavMeshAgent>().transform.position;
-                agent.GetComponent<NavMeshAgent>().avoidancePriority = 60;
-                priorityChanged = true;
-            }
-            else if(priorityChanged)
-            {
-                agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
-                priorityChanged = false;
-            }
 
             if (oldTarget != target)
             {
