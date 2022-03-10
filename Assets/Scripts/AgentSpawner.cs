@@ -8,7 +8,6 @@ public class AgentSpawner : MonoBehaviour
 {
     public int id;
     public int index;
-    public int nbAgents;
     public int maxNumberAgent;
     
     public GameObject TextPrefab;
@@ -28,7 +27,7 @@ public class AgentSpawner : MonoBehaviour
         // initialisation des paramètres de base du spawner
         id = 0;
         index = 0;
-        nbAgents = 0;
+        index = 0;
         maxNumberAgent = 500;
 
         // initialisation de l'agent chanteur ("singer") qui spawnera sur la scene et dont la destination restera sa posistion
@@ -62,13 +61,13 @@ public class AgentSpawner : MonoBehaviour
         return percentTable.stopDistence[i];
         
     }*/
-
+    
     // AddAgent chercher à faire "spawner" un agent si le nombre d'agent n'a pas été dépassé, en
     // le faisant apparaitre près de la porte, avec un destination aléatoire dirigé vers la scène
     // si le nombre d'agent est déjà atteint, alors un message apparait sur le canvas
     public void AddAgent()
     {
-        if (nbAgents < maxNumberAgent)
+        if (index < maxNumberAgent)
         {
 
             int randNumbrer = Random.Range(0, PointOfInterest.Length);
@@ -78,7 +77,6 @@ public class AgentSpawner : MonoBehaviour
             agentClone[index].scene = PointOfInterest[randNumbrer].transform.position;
             agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
             agentClone[index].agent.GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(1,8);//SelectWithPurcent(percentTable);
-            nbAgents++;
             index++;
             id++;
         }
@@ -94,11 +92,17 @@ public class AgentSpawner : MonoBehaviour
 
     public void Add50Agent()
     {
+        StartCoroutine(WaitAddAgent());
+    }
+
+    public IEnumerator WaitAddAgent(float flow = 0.25F)
+    {
         var oneTime = true;
         for (int i = 0; i < 50; i++)
         {
             if (index < maxNumberAgent)
             {
+                yield return new WaitForSeconds(flow);
                 AddAgent();
             }
             else if (oneTime)
@@ -108,6 +112,7 @@ public class AgentSpawner : MonoBehaviour
                 floatingText.GetComponent<TextMeshProUGUI>().text = "You can't add more agent !";
             }
         }
+        
     }
 
     // DeleteAgent chercher à supprimer un agent si le nombre d'agent n'a pas déjà nulle, en lui
@@ -122,7 +127,6 @@ public class AgentSpawner : MonoBehaviour
             agentClone[indexbis].target = spawnerDoor.transform.position;
             agentClone[indexbis].GetComponent<NavMeshAgent>().stoppingDistance = 0;
             agentClone.RemoveAt(indexbis);
-            nbAgents--;
             index--;
 
         }
@@ -154,6 +158,6 @@ public class AgentSpawner : MonoBehaviour
 
     // GetPersonCount renvoie la veuleur du nombre d'agent encore existant dans la simulation
     public int GetPersonCount(){
-        return nbAgents;
+        return index;
     }
 }
