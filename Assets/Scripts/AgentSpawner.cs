@@ -25,6 +25,7 @@ public class AgentSpawner : MonoBehaviour
     int nbContacts;
     int nbTotalContacts;
     InputField addAgentInput;
+    InputField addFlowInput;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +41,7 @@ public class AgentSpawner : MonoBehaviour
         agentSinger.GetComponent<NavMeshAgent>().SetDestination(agentSinger.target);
         
         addAgentInput = GameObject.Find("AddAgentInputField").GetComponent<InputField>();
+        addFlowInput = GameObject.Find("InputFlow").GetComponent<InputField>();
 
     }
     
@@ -177,6 +179,7 @@ public class AgentSpawner : MonoBehaviour
     }
 
     void Update(){
+        nbTotalContacts = 0;
         for (int i = 0; i < index; i++){
             setNbContacts(agentClone[i].contactCapsuleNumber);
             nbTotalContacts += agentClone[i].contactCapsuleNumber;
