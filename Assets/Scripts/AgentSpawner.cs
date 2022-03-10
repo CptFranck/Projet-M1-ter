@@ -20,7 +20,7 @@ public class AgentSpawner : MonoBehaviour
 
     public GameObject spawnerDoor;
     public GameObject spawnerScene;
-    public GameObject[] PointOfInterest;
+    public GameObject[] pointOfInterest;
 
     void Start()
     {
@@ -70,12 +70,12 @@ public class AgentSpawner : MonoBehaviour
         if (index < maxNumberAgent)
         {
 
-            int randNumbrer = Random.Range(0, PointOfInterest.Length);
+            int randNumbrer = Random.Range(0, pointOfInterest.Length);
             agentClone.Add(Instantiate(agentPrefab, spawnerDoor.transform.position, Quaternion.identity));
             agentClone[index].id = id;
             agentClone[index].type = "public";   
-            agentClone[index].scene = PointOfInterest[randNumbrer].transform.position;
-            agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
+            agentClone[index].scene = pointOfInterest[randNumbrer].transform.position;
+            agentClone[index].target = pointOfInterest[randNumbrer].transform.position;
             agentClone[index].agent.GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(1,8);//SelectWithPurcent(percentTable);
             index++;
             id++;
