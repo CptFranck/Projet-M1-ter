@@ -133,10 +133,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febb323a10f01594ba667cdb928a7c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
-  type: 
   agent: {fileID: 1166541743505109183}
+  id: 0
+  state: 0
+  comfortLevel: 0
+  speed: 0
+  type: AgentControl
+  scene: {x: 0, y: 0, z: 0}
   target: {x: 0, y: 0, z: 0}
+  contactId: 
+  contactBoxNumber: 0
+  oldcontactBoxNumber: 0
+  contactCapsuleNumber: 0
 --- !u!54 &-6819211567102186145
 Rigidbody:
   m_ObjectHideFlags: 0

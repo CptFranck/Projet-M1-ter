@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using TMPro;
+using UnityEngine.UI;
 
 public class AgentSpawner : MonoBehaviour
 {
@@ -22,10 +24,19 @@ public class AgentSpawner : MonoBehaviour
     public GameObject spawnerScene;
     public GameObject[] pointOfInterest;
 
+    int nbAgentsAdded;//to get the input of the canva
+    int nbContacts;
+    int nbTotalContacts;
+    InputField addAgentInput;
+    InputField addFlowInput;
+    // Start is called before the first frame update
+
     void Start()
     {
-        // initialisation des paramètres de base du spawner
+        // initialisation des paramï¿½tres de base du spawner
         id = 0;
+        nbAgentsAdded = 0;
+        nbContacts = 0;
         index = 0;
         index = 0;
         maxNumberAgent = 500;
@@ -37,6 +48,9 @@ public class AgentSpawner : MonoBehaviour
         agentSinger.scene = agentSinger.transform.position;
         agentSinger.target = agentSinger.transform.position;
         agentSinger.GetComponent<NavMeshAgent>().SetDestination(agentSinger.target);
+        
+        addAgentInput = GameObject.Find("AddAgentInputField").GetComponent<InputField>();
+        addFlowInput = GameObject.Find("InputFlow").GetComponent<InputField>();
 
     }
 
@@ -62,9 +76,14 @@ public class AgentSpawner : MonoBehaviour
         
     }*/
     
-    // AddAgent chercher à faire "spawner" un agent si le nombre d'agent n'a pas été dépassé, en
-    // le faisant apparaitre près de la porte, avec un destination aléatoire dirigé vers la scène
-    // si le nombre d'agent est déjà atteint, alors un message apparait sur le canvas
+    void Update(){
+        nbTotalContacts = 0;
+        for (int i = 0; i < index; i++){
+            // setNbContacts(agentClone[i].contactCapsuleNumber);
+            nbTotalContacts += agentClone[i].contactCapsuleNumber;
+        }
+    }    
+        
     public void AddAgent()
     {
         if (index < maxNumberAgent)
@@ -88,7 +107,7 @@ public class AgentSpawner : MonoBehaviour
         
     }
 
-    // Add50Agent chercher à faire "spawner" 50 agents, en suivant le même processus que la AddAgent
+    // Add50Agent chercher ï¿½ faire "spawner" 50 agents, en suivant le mï¿½me processus que la AddAgent
 
     public void Add50Agent()
     {
@@ -115,9 +134,9 @@ public class AgentSpawner : MonoBehaviour
         
     }
 
-    // DeleteAgent chercher à supprimer un agent si le nombre d'agent n'a pas déjà nulle, en lui
-    // changeant son état pour le mettre à 0 et sa distnce de stoppage (afin de permettre sa des-
-    // truction au contact de la porte), puis en l'enlevant de la liste des agents créés
+    // DeleteAgent chercher ï¿½ supprimer un agent si le nombre d'agent n'a pas dï¿½jï¿½ nulle, en lui
+    // changeant son ï¿½tat pour le mettre ï¿½ 0 et sa distnce de stoppage (afin de permettre sa des-
+    // truction au contact de la porte), puis en l'enlevant de la liste des agents crï¿½ï¿½s
     public void DeleteAgent()
     {
         
@@ -128,7 +147,6 @@ public class AgentSpawner : MonoBehaviour
             agentClone[indexbis].GetComponent<NavMeshAgent>().stoppingDistance = 0;
             agentClone.RemoveAt(indexbis);
             index--;
-
         }
         else
         {
@@ -137,7 +155,7 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-    // Delete50Agent chercher à détruire 50 agents en les faisant sorir de la salle, en suivant le même processus que DeleteAgent
+    // Delete50Agent chercher ï¿½ dï¿½truire 50 agents en les faisant sorir de la salle, en suivant le mï¿½me processus que DeleteAgent
     public void Delete50Agent()
     {
         var oneTime = true;
@@ -155,9 +173,66 @@ public class AgentSpawner : MonoBehaviour
             }
         }
     }
+    //Add the number of agents manually 
+    public void AddInputAgents(){
+        //get the number inside the input field
+        nbAgentsAdded = int.Parse(addAgentInput.text);
+        var OneTime = true;
+        for (int i = 0; i < nbAgentsAdded; i++)
+        {
+            if (index < MaxNumberAgent)
+            {
+                agentClone.Add(Instantiate(agentPrefab, spawnerDoor.transform.position, Quaternion.identity));
+                int randNumbrer = Random.Range(0, PointOfInterest.Length);
+                agentClone[index].id = id;
+                agentClone[index].type = "public";
+                agentClone[index].scene = PointOfInterest[randNumbrer].transform.position;
+                agentClone[index].target = PointOfInterest[randNumbrer].transform.position;
+                index++;
+                id++;
+            }
+            else if (OneTime)
+            {
+                OneTime = false;
+                GameObject floatingText = GameObject.Instantiate(TextPrefab, GameObject.FindGameObjectWithTag("Canvas").transform);
+                floatingText.GetComponent<TextMeshProUGUI>().text = "You can't add more agent !";
+            }
+        }
+    }
+    public void DeleteInputAgent()
+    {
+        var OneTime = true;
+        nbAgentsAdded = int.Parse(addAgentInput.text);
+        for (int i = 0; i < nbAgentsAdded; i++)
+        {
+            if (index > 0)
+            {
+                var indexbis = Random.Range(0, index);
+                agentClone[indexbis].state = 0;
+                agentClone[indexbis].target = spawnerDoor.transform.position;
+                agentClone.RemoveAt(indexbis);
+                index--;
+            }
+            else if(OneTime)
+            {
+                OneTime = false;
+                GameObject floatingText = GameObject.Instantiate(TextPrefab, GameObject.FindGameObjectWithTag("Canvas").transform);
+                floatingText.GetComponent<TextMeshProUGUI>().text = "You can't delete agent !";
+            }
+        }
+    }
 
-    // GetPersonCount renvoie la veuleur du nombre d'agent encore existant dans la simulation
-    public int GetPersonCount(){
+
+
+    //get the number of agent created
+    public int getPersonCount(){
         return index;
+    }
+
+    public void setNbContacts(int valueContact){
+        nbContacts = valueContact;
+    }
+    public int getNbContacts(){
+        return nbTotalContacts;
     }
 }

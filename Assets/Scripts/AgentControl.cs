@@ -107,10 +107,10 @@ public class AgentControl : MonoBehaviour
                 weight = 0;
             }*/
 
-            // Modification de la vitesse en temps réel
+            // Modification de la vitesse en temps rï¿½el
             agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber + weight);
 
-            // Modification de la destination sur l'objectif a évolué
+            // Modification de la destination sur l'objectif a ï¿½voluï¿½
             if (oldTarget != target)
             {
                 agent.GetComponent<NavMeshAgent>().SetDestination(target);
@@ -121,21 +121,21 @@ public class AgentControl : MonoBehaviour
             //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
         }
     }
-    // Speed cherche à renvoyer une vitesse que doit avoir un agent en fonction du
+    // Speed cherche ï¿½ renvoyer une vitesse que doit avoir un agent en fonction du
     // nombre de contact direct qu'il a avec d'autres agents
     public double Speed(double density)
     {
         var x = density;
         return ((.95/Mathf.Exp((float)x))+.05)*speed;
-        // 0.95/exp(x) + 0.05 évolution de la vitesse en m/s
-        // Au dela de 5 contacts, la vitesse stagne à 0.2 m/s
+        // 0.95/exp(x) + 0.05 ï¿½volution de la vitesse en m/s
+        // Au dela de 5 contacts, la vitesse stagne ï¿½ 0.2 m/s
     }
 
-    // TriggerEnter correspond à la réaction d'un agent lors d'un contact avec un
-    // gameObeject, ici son but et de detecter la sortie si son étant est 0, ou de
-    // detecter un autre agent et tout de suite après l'enregistrer afin de ne pas
-    // comptabiliser plusieur fois le même agents alors qu'il est tjrs en contact,
-    // le tout en mettant à jours le nombre de contact direct et indirect des agents
+    // TriggerEnter correspond ï¿½ la rï¿½action d'un agent lors d'un contact avec un
+    // gameObeject, ici son but et de detecter la sortie si son ï¿½tant est 0, ou de
+    // detecter un autre agent et tout de suite aprï¿½s l'enregistrer afin de ne pas
+    // comptabiliser plusieur fois le mï¿½me agents alors qu'il est tjrs en contact,
+    // le tout en mettant ï¿½ jours le nombre de contact direct et indirect des agents
     // entre eux
     
     public void TriggerEnter(Collider collision, string type)
@@ -165,10 +165,10 @@ public class AgentControl : MonoBehaviour
         }
     }
 
-    // TriggerExit correspond à la réaction d'un agent lors d'un contact "de sortie"
+    // TriggerExit correspond ï¿½ la rï¿½action d'un agent lors d'un contact "de sortie"
     // avec un gameObeject, ici son but et de detecter la sortie d'un autre agent
-    // déjà enregistrer afin de pouvoir le recomptabiliser si jamais il revenait au
-    // contact de cet agent ayant déjà quitter le collider le tout en mettant à jours
+    // dï¿½jï¿½ enregistrer afin de pouvoir le recomptabiliser si jamais il revenait au
+    // contact de cet agent ayant dï¿½jï¿½ quitter le collider le tout en mettant ï¿½ jours
     // le nombre de contact direct et indirect des agents entre eux
     public void TriggerExit(Collider collision, string type)
     {
