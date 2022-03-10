@@ -12,6 +12,7 @@ public class CapsuleColliderbis : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // initialisation de notre gameobject
         type = "Caps";
         CapsuleCollider.isTrigger = true;
         CapsuleCollider.center = new Vector3(0, 0, 0);
@@ -20,6 +21,10 @@ public class CapsuleColliderbis : MonoBehaviour
         CapsuleCollider.direction = 1; //Y
     }
 
+    // Les fonctions OnTrigger Enter et Exit font la passe au
+    // fontions Trigger Enter et Exit de l'agent auxquels ces
+    // scriptes sont associés (architecture necessaire à la
+    // différentiation des trigger event)
     private void OnTriggerEnter(Collider collision)
     {
         agent.GetComponent<AgentControl>().TriggerEnter(collision, type);
