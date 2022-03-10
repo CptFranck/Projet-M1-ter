@@ -492,8 +492,10 @@ MonoBehaviour:
   state: 0
   comfortLevel: 0
   speed: 0
-  type: 
+  type: AgentControl
+  scene: {x: 0, y: 0, z: 0}
   target: {x: 0, y: 0, z: 0}
   contactId: 
   contactBoxNumber: 0
+  oldcontactBoxNumber: 0
   contactCapsuleNumber: 0

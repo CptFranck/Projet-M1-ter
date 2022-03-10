@@ -11,10 +11,9 @@ public class StatsDisplay : MonoBehaviour
     public Text nbContactsTxt;
     public Text densiteTxt;
     AgentSpawner personCount;
-    AgentControl personContacts;
-    
     float surface;
     float densite;
+    float contactMoyen;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,8 +22,7 @@ public class StatsDisplay : MonoBehaviour
         
         statsUIDisplay.SetActive(false);
         personCount = GameObject.FindObjectOfType(typeof(AgentSpawner)) as AgentSpawner;
-        personContacts = GameObject.FindObjectOfType(typeof(AgentControl)) as AgentControl;
-    }
+      }
 
     // Update is called once per frame
     void Update()
@@ -40,14 +38,23 @@ public class StatsDisplay : MonoBehaviour
     public void UpdateUI(){
         //Change le texte de l'interface pour le nombre de personnes
         nbPersonTxt.text = "Nb de personnes : " + personCount.getPersonCount();
-        // nbContactsTxt.text = "Nb de contacts en moyenne : " + personContacts.getCapsCollisions();
+        // nbContactsTxt.text = "Nb de contacts en moyenne : " + CalculateContactMoyen().ToString("f2");
         densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(floor).ToString("f2"); //Montre deux chiffres après la virgule
-    
     }
 
+    //Fonction pour calculer la densité moyenne
     float CalculateDensity(GameObject floor){
         surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z;
         densite =  personCount.getPersonCount() / surface; //à deux chiffres après la virgule près        
         return densite;
     }
+
+    
+    // float CalculateContactMoyen(){
+    //     if (personCount.getPersonCount() != 0){
+    //         contactMoyen = personCount.getNbContacts()/personCount.getPersonCount();
+    //     }
+    //     Debug.Log(contactMoyen);
+    //     return contactMoyen;
+    // }
 }
