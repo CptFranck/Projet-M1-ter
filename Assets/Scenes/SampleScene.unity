@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 9833488}
   - component: {fileID: 9833487}
   m_Layer: 5
-  m_Name: AddInputButton
+  m_Name: DeleteInputButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 65040857}
   - component: {fileID: 65040856}
   m_Layer: 5
-  m_Name: DeleteInputButton
+  m_Name: AddInputButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

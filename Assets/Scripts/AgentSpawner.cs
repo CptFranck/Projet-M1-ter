@@ -27,6 +27,7 @@ public class AgentSpawner : MonoBehaviour
     InputField addAgentInput;
     InputField addFlowInput;
     // Start is called before the first frame update
+
     void Start()
     {
         id = 0;
@@ -45,6 +46,14 @@ public class AgentSpawner : MonoBehaviour
 
     }
     
+    void Update(){
+        nbTotalContacts = 0;
+        for (int i = 0; i < index; i++){
+            // setNbContacts(agentClone[i].contactCapsuleNumber);
+            nbTotalContacts += agentClone[i].contactCapsuleNumber;
+        }
+    }    
+        
     public void AddAgent()
     {
         if (index < MaxNumberAgent)
@@ -178,13 +187,7 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-    void Update(){
-        nbTotalContacts = 0;
-        for (int i = 0; i < index; i++){
-            setNbContacts(agentClone[i].contactCapsuleNumber);
-            nbTotalContacts += agentClone[i].contactCapsuleNumber;
-        }
-    }
+
 
     //get the number of agent created
     public int getPersonCount(){

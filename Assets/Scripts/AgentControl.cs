@@ -41,7 +41,7 @@ public class AgentControl : MonoBehaviour
             agent.GetComponent<NavMeshAgent>().SetDestination(target);
             this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
         }
-  }
+    }
     
     public double Speed(double density)
     {
