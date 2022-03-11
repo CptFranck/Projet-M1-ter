@@ -10,16 +10,19 @@ public class StatsDisplay : MonoBehaviour
     public Text nbPersonTxt;
     public Text nbContactsTxt;
     public Text densiteTxt;
-    public Text dangerAsphyxia;
+    public Text dangerAsphyxiaTxt;
+    public Text timerTxt;
 
     AgentSpawner agentSpawner;
     float surface;
     float densite;
     float contactMoyen;
+    float timer;
 
     // Start is called before the first frame update
     void Start()
     {
+        timer = 50;
         surface = 0;
         densite = 0f;
         contactMoyen = 0;
@@ -30,7 +33,10 @@ public class StatsDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Quand le bouton i est appuyé, affice l'interface
+        timer += Time.deltaTime;
+        //affiche temps en minutes et secondes (FloorToInt permet d'arondir la valeur)
+        timerTxt.text = "Timer : " + (Mathf.FloorToInt(timer / 60)).ToString("00")  + ":" + (Mathf.FloorToInt(timer % 60)).ToString("00");
+        //Ouvre l'interface lorsque le bouton i est appuyé
         if(Input.GetButtonDown("Statistics")){
             statsUIDisplay.SetActive(!statsUIDisplay.activeSelf);
         }
@@ -43,12 +49,12 @@ public class StatsDisplay : MonoBehaviour
         nbPersonTxt.text = "Nb de personnes : " + agentSpawner.GetPersonCount();
         densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(floor).ToString("f2"); //Montre deux chiffres après la virgule
         nbContactsTxt.text = "Nb de contacts en moyenne : " + CalculateContactMoyen().ToString("f2");
-        dangerAsphyxia.text = "Personnes en danger d'asphyxie : " + agentSpawner.GetNbContactsInBox();
+        dangerAsphyxiaTxt.text = "Personnes en danger d'asphyxie : " + agentSpawner.GetNbContactsInBox();
     }
 
     //Fonction pour calculer la densité moyenne
     float CalculateDensity(GameObject floor){
-        surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z;
+        surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z; //Récupère la largeur et longueur du plane pour calculer la surface
         densite =  agentSpawner.GetPersonCount() / surface;  
         return densite;
     }
@@ -60,5 +66,14 @@ public class StatsDisplay : MonoBehaviour
             contactMoyen = (float) (agentSpawner.GetNbContacts()) / (float) (agentSpawner.GetPersonCount());
         }
         return contactMoyen;
+    }
+
+    //Quand le bouton pause est cliqué, la simulation est gelée
+    void PauseGame (){
+        Time.timeScale = 0;
+    }
+    //Reprend la simulation
+    void ResumeGame (){
+        Time.timeScale = 1;
     }
 }

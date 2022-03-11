@@ -38,7 +38,6 @@ public class AgentSpawner : MonoBehaviour
         // initialisation des param�tres de base du spawner
         id = 0;
         index = 0;
-        index = 0;
         nbAgentsAdded = 0;
         maxNumberAgent = 500;
         nbAgentInAsphyxiaDanger = 0;
@@ -85,8 +84,8 @@ public class AgentSpawner : MonoBehaviour
         //parcours la liste d'agent
         for (int i = 0; i < index; i++){
             nbTotalContacts += agentClone[i].contactCapsuleNumber; //ajoute le nombre de contact de l'agent 
-            //si l'agent a plus de 6 contacts dans sa box de 1m²
-            if (agentClone[i].contactBoxNumber > 6){
+            //si l'agent a plus de 8 contacts dans sa box de 1m². La valeur 8 peut bien-sûr être changée
+            if (agentClone[i].contactBoxNumber > 8){
                 nbAgentInAsphyxiaDanger++;
             }
         }
@@ -230,14 +229,15 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-    //get the number of agent created
+    //get le nombre d'agent crée
     public int GetPersonCount(){
         return index;
     }
-
+    //get le nombre de contacts total des agents
     public int GetNbContacts(){
         return nbTotalContacts;
     }
+    //get le nombre d'agent total ayant plus de 8 personnes autour de lui
     public int GetNbContactsInBox(){
         return nbAgentInAsphyxiaDanger;
     }
