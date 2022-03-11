@@ -18,6 +18,7 @@ public class StatsDisplay : MonoBehaviour
 
     public GameObject plane;
     public GameObject panelStats;
+
     private AgentSpawner agentSpawner;
     
     // Start is called before the first frame update
@@ -70,11 +71,20 @@ public class StatsDisplay : MonoBehaviour
     }
 
     //Quand le bouton pause est cliqué, la simulation est gelée
-    void PauseGame (){
+    public void PauseGame (){
         Time.timeScale = 0;
     }
     //Reprend la simulation
-    void ResumeGame (){
+    public void StartGame (){
         Time.timeScale = 1;
+    }
+
+    //Réinitialise toute la simulation
+    public void ResetGame (){
+        if (agentSpawner.GetNbContacts() > 0){
+            agentSpawner.ResetListAgents();         
+        }
+        densite = 0;
+        contactMoyen = 0;
     }
 }
