@@ -13,6 +13,7 @@ public class AgentSpawner : MonoBehaviour
 
     //private int nbContacts;
     private int nbTotalContacts;
+    private int nbAgentInAsphyxiaDanger;
 
     public float flow;                      // Attribut correspondant au flux d'agent lors de leur création          
 

@@ -23,7 +23,7 @@ public class StatsDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timer = 50;
+        timer = 0;
         surface = 0;
         densite = 0f;
         contactMoyen = 0;
