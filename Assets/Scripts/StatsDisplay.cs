@@ -22,7 +22,6 @@ public class StatsDisplay : MonoBehaviour
     {
         surface = 0;
         densite = 0f;
-        
         panelStats.SetActive(true);
         agentSpawner = GameObject.FindObjectOfType(typeof(AgentSpawner)) as AgentSpawner;
     }

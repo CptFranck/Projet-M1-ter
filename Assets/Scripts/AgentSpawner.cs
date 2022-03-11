@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using TMPro;
@@ -8,26 +7,26 @@ using UnityEngine.UI;
 
 public class AgentSpawner : MonoBehaviour
 {
-    public int id;
-    public int index;
+    public int id;                          // Attribut correspondant à l'attribution des id de manière unique
+    public int index;                       // Attributs correspondant aux informations générales des agents
     public int maxNumberAgent;
 
     //private int nbContacts;
     private int nbTotalContacts;
 
-    public float flow;
+    public float flow;                      // Attribut correspondant au flux d'agent lors de leur création          
 
-    public GameObject textPrefab;
+    public GameObject textPrefab;           // Attributs correspondants à l'interface
     public InputField flowInput;
     public InputField inputNumberAgents;
 
-    public AgentControl agentPrefab;
+    public AgentControl agentPrefab;        // Attribut correspondants à l'objet associés au prefab des agents
     public AgentControl agentSinger;
     public List<AgentControl> agentClone;
 
     //public PercentBox percentTable;
 
-    public GameObject spawnerDoor;
+    public GameObject spawnerDoor;          // Attributs correspondants aux point 3D pour les différentes destinations
     public GameObject spawnerScene;
     public GameObject[] pointOfInterest;
     
@@ -35,13 +34,13 @@ public class AgentSpawner : MonoBehaviour
     {
         // initialisation des paramètres de base du spawner
         id = 0;
-        flow = 0.25f;
+        flow = 0;
         index = 0;
         //nbContacts = 0;
         maxNumberAgent = 300;
 
         // initialisation de l'agent chanteur ("singer") qui spawnera sur la scene et dont la destination restera sa posistion
-        //percentTable = new PercentBox();
+        // percentTable = new PercentBox();
         agentSinger = Instantiate(agentPrefab, spawnerScene.transform.position, Quaternion.identity);
         agentSinger.type = "singer";
         agentSinger.scene = agentSinger.transform.position;
@@ -60,6 +59,8 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
+    // SelectWithPurcent permet l'attribution d'une distence de stoppage en fonction d'un tableau de pourcentage attribuant des
+    // poids à des probabilités
     /*public int SelectWithPurcent(PercentBox percentTable)
    {
        float r;
@@ -82,14 +83,15 @@ public class AgentSpawner : MonoBehaviour
 
    }*/
 
+    // ChangeFlow permet de changer la valeurs de flux lors de la création des agents
     public void ChangeFlow()
     {
         Debug.Log(flow);
         flow = float.Parse(flowInput.text);
         Debug.Log(flow);
-
     }
 
+    // DisplayText permet l'affichage d'un message
     public void DisplayText(string message)
     {
         GameObject floatingText = Instantiate(textPrefab, GameObject.FindGameObjectWithTag("Canvas").transform);
@@ -142,7 +144,6 @@ public class AgentSpawner : MonoBehaviour
     }
     public IEnumerator WaitAddAgent(int inputNumberAgents = 50)
     {
-        //Debug.Log(this.inputNumberAgents.transform);//.parent.GetComponent<Button>().interactable = false;
         var oneTime = true;
         for (int i = 0; i < inputNumberAgents; i++)
         {
@@ -160,7 +161,6 @@ public class AgentSpawner : MonoBehaviour
                 DisplayText("You can't add more agent !");
             }
         }
-        //this.inputNumberAgents.GetComponentInParent<Button>().interactable = true;
     }
 
     // DeleteAgent chercher � supprimer un agent si le nombre d'agent n'a pas d�j� nulle, en lui
@@ -211,7 +211,7 @@ public class AgentSpawner : MonoBehaviour
         {
             if (index > 0)
             {
-                if (flow == 25 /*flow != 0*/)
+                if (flow != 0)
                 {
                     yield return new WaitForSeconds(flow);
                 }
@@ -225,11 +225,7 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-  
-
-
-
-    //get the number of agent created
+    // Getters
     public int getPersonCount(){
         return index;
     }
@@ -237,6 +233,7 @@ public class AgentSpawner : MonoBehaviour
     /*public void setNbContacts(int valueContact){
         nbContacts = valueContact;
     }*/
+
     public int getNbContacts(){
         return nbTotalContacts;
     }
