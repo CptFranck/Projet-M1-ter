@@ -25,8 +25,10 @@ public class AgentSpawner : MonoBehaviour
     public GameObject[] PointOfInterest;
 
     int nbAgentsAdded;//to get the input of the canva
-    int nbContacts;
     int nbTotalContacts;
+    int nbTotalContactsBox;
+    int nbAgentInAsphyxiaDanger;
+
     InputField addAgentInput;
     InputField addFlowInput;
     // Start is called before the first frame update
@@ -35,11 +37,11 @@ public class AgentSpawner : MonoBehaviour
     {
         // initialisation des param�tres de base du spawner
         id = 0;
+        index = 0;
+        index = 0;
         nbAgentsAdded = 0;
-        nbContacts = 0;
-        index = 0;
-        index = 0;
         maxNumberAgent = 500;
+        nbAgentInAsphyxiaDanger = 0;
 
         // initialisation de l'agent chanteur ("singer") qui spawnera sur la scene et dont la destination restera sa posistion
         percentTable = new PercentBox();
@@ -77,10 +79,16 @@ public class AgentSpawner : MonoBehaviour
     }*/
     
     void Update(){
+        //reset à chaque frame pour avoir une mise à jour toute les frames 
         nbTotalContacts = 0;
+        nbAgentInAsphyxiaDanger = 0;
+        //parcours la liste d'agent
         for (int i = 0; i < index; i++){
-            // setNbContacts(agentClone[i].contactCapsuleNumber);
-            nbTotalContacts += agentClone[i].contactCapsuleNumber;
+            nbTotalContacts += agentClone[i].contactCapsuleNumber; //ajoute le nombre de contact de l'agent 
+            //si l'agent a plus de 6 contacts dans sa box de 1m²
+            if (agentClone[i].contactBoxNumber > 6){
+                nbAgentInAsphyxiaDanger++;
+            }
         }
     }    
         
@@ -180,7 +188,7 @@ public class AgentSpawner : MonoBehaviour
         var OneTime = true;
         for (int i = 0; i < nbAgentsAdded; i++)
         {
-            if (index < MaxNumberAgent)
+            if (index < maxNumberAgent)
             {
                 agentClone.Add(Instantiate(agentPrefab, spawnerDoor.transform.position, Quaternion.identity));
                 int randNumbrer = Random.Range(0, PointOfInterest.Length);
@@ -222,17 +230,15 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-
-
     //get the number of agent created
-    public int getPersonCount(){
+    public int GetPersonCount(){
         return index;
     }
 
-    public void setNbContacts(int valueContact){
-        nbContacts = valueContact;
-    }
-    public int getNbContacts(){
+    public int GetNbContacts(){
         return nbTotalContacts;
+    }
+    public int GetNbContactsInBox(){
+        return nbAgentInAsphyxiaDanger;
     }
 }

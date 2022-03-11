@@ -10,16 +10,19 @@ public class StatsDisplay : MonoBehaviour
     public Text nbPersonTxt;
     public Text nbContactsTxt;
     public Text densiteTxt;
+    public Text dangerAsphyxia;
+
     AgentSpawner agentSpawner;
     float surface;
     float densite;
     float contactMoyen;
+
     // Start is called before the first frame update
     void Start()
     {
         surface = 0;
         densite = 0f;
-        
+        contactMoyen = 0;
         statsUIDisplay.SetActive(true);
         agentSpawner = GameObject.FindObjectOfType(typeof(AgentSpawner)) as AgentSpawner;
       }
@@ -37,24 +40,25 @@ public class StatsDisplay : MonoBehaviour
 
     public void UpdateUI(){
         //Change le texte de l'interface pour le nombre de personnes
-        nbPersonTxt.text = "Nb de personnes : " + agentSpawner.getPersonCount();
+        nbPersonTxt.text = "Nb de personnes : " + agentSpawner.GetPersonCount();
         densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(floor).ToString("f2"); //Montre deux chiffres après la virgule
         nbContactsTxt.text = "Nb de contacts en moyenne : " + CalculateContactMoyen().ToString("f2");
+        dangerAsphyxia.text = "Personnes en danger d'asphyxie : " + agentSpawner.GetNbContactsInBox();
     }
 
     //Fonction pour calculer la densité moyenne
     float CalculateDensity(GameObject floor){
         surface = floor.GetComponent<Renderer>().bounds.size.x * floor.GetComponent<Renderer>().bounds.size.z;
-        densite =  agentSpawner.getPersonCount() / surface;  
+        densite =  agentSpawner.GetPersonCount() / surface;  
         return densite;
     }
     
+    //Fonction pour calculer le nombre de contact en moyenne
     float CalculateContactMoyen(){
-        if (agentSpawner.getPersonCount() != 0){
-            contactMoyen = (float) (agentSpawner.getNbContacts() / agentSpawner.getPersonCount());
+        //si le nombre de personnes est différent de 0
+        if (agentSpawner.GetPersonCount() != 0){
+            contactMoyen = (float) (agentSpawner.GetNbContacts()) / (float) (agentSpawner.GetPersonCount());
         }
-        Debug.Log("Nb contact total " + agentSpawner.getNbContacts());
-        Debug.Log("contact moyen " +contactMoyen);
         return contactMoyen;
     }
 }
