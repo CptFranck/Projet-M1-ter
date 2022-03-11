@@ -5,50 +5,49 @@ using UnityEngine.AI;
 
 public class AgentControl : MonoBehaviour
 {
-    public GameObject agent;
+    public GameObject agent;                // Attribut correspondant au prefab correspondant à l'agent
 
-    public int id; 
+    public int id;                          // Attributs correspondant aux caractéristiques générales de l'agent
     public int state;
-    public int weight;
-    public bool priorityChanged;
+    //public int weight;
+    //public bool priorityChanged;
 
     public float speed;
-    public float cooldown;
-    public float countdown;
-    public float distanceTarget;
-    public float oldDistanceTarget;
+    //public float cooldown;
+    //public float countdown;
+    //public float distanceTarget;
+    //public float oldDistanceTarget;
 
     public string type;
     
-    public Vector3 scene;
+    public Vector3 scene;                   // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
     public Vector3 target;
     public Vector3 oldTarget;
 
-    public List<int> contactId;
+    public List<int> contactId;             // Attributs correspondant aux contacts de l'agent (list des contactes et les colliders propres à l'agent)
     public int contactBoxNumber;
     public int contactCapsuleNumber;
 
     void Start()
     {
-        // initialisation d'agent
+        // initialisation des attributs généraux de l'agent (les points 3D étant initialisé par l'objet AgentSpawner
         state = 1;
-        weight = 0;
-        cooldown = 0;
-        countdown = 0;
-        oldDistanceTarget = 0;
-        priorityChanged = false;
+        //weight = 0;
+        //cooldown = 0;
+        //countdown = 0;
+        //oldDistanceTarget = 0;
+        //priorityChanged = false;
+        speed = 3.5F;
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
-        speed = 3.5F;
         agent.GetComponent<NavMeshAgent>().speed = speed;
         agent.GetComponent<NavMeshAgent>().avoidancePriority = 50; //Random.Range(50, 60);
     }
 
     void Update()
     {
-        if (type == "public") 
-        {
-            
+        if (type == "public")           // Si l'agent fait partie du public alors :
+        { 
             /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
                agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
             {
@@ -59,7 +58,7 @@ public class AgentControl : MonoBehaviour
                 agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
             }*/
             
-            if(state == 1)
+            if(state == 1)              // Si l'état de l'agent correspond à rester dans la salle alors :
             {
                 //distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position, target);
                 /*if (countdown != -1)
@@ -87,12 +86,11 @@ public class AgentControl : MonoBehaviour
                             cooldown = 0;
                             countdown++;
                             //Debug.Log("countdown : " + countdown + "s");
-                        }
-                        
+                        }  
                     }
                 }*/
             } 
-            else
+            else                        // So l'agent souhaite sortir alors :
             {
                 //agent.GetComponent<NavMeshAgent>().isStopped = false;
                 //agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
@@ -107,13 +105,12 @@ public class AgentControl : MonoBehaviour
                 weight = 0;
             }*/
 
-            // Modification de la vitesse en temps r�el
-            agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber + weight);
+            // Modification de la vitesse en temps réel
+            agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber /*+ weight*/);
 
-            // Modification de la destination sur l'objectif a �volu�
-            if (oldTarget != target)
+            if (oldTarget != target)    // Si l'objectif de l'agent a été modifié alors : on met à jour sa destination
             {
-                agent.GetComponent<NavMeshAgent>().SetDestination(target);
+                agent.GetComponent<NavMeshAgent>().SetDestination(target); 
             }
             oldTarget = target;
 
@@ -121,14 +118,15 @@ public class AgentControl : MonoBehaviour
             //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
         }
     }
-    // Speed cherche � renvoyer une vitesse que doit avoir un agent en fonction du
+
+    // Speed cherche à renvoyer une vitesse que doit avoir un agent en fonction du
     // nombre de contact direct qu'il a avec d'autres agents
     public double Speed(double density)
     {
         var x = density;
         return ((.95/Mathf.Exp((float)x))+.05)*speed;
         // 0.95/exp(x) + 0.05 �volution de la vitesse en m/s
-        // Au dela de 5 contacts, la vitesse stagne � 0.2 m/s
+        // Au dela de 5 contacts, la vitesse stagne à 0.2 m/s
     }
 
     // TriggerEnter correspond � la r�action d'un agent lors d'un contact avec un
