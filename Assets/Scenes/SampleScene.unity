@@ -1326,7 +1326,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 976052769}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1943,7 +1943,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1032180318}
         m_TargetAssemblyTypeName: StatsDisplay, Assembly-CSharp
-        m_MethodName: PauseGame
+        m_MethodName: ResetGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4645,9 +4645,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 359660845}
   - {fileID: 1155416645}
   - {fileID: 1540914313}
-  - {fileID: 359660845}
   - {fileID: 472186691}
   m_Father: {fileID: 1032180317}
   m_RootOrder: 10
@@ -5425,7 +5425,7 @@ RectTransform:
   m_Children:
   - {fileID: 1660591772}
   m_Father: {fileID: 976052769}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6288,7 +6288,7 @@ RectTransform:
   m_Children:
   - {fileID: 1715461368}
   m_Father: {fileID: 976052769}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

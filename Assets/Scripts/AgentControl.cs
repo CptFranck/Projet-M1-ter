@@ -193,6 +193,7 @@ public class AgentControl : MonoBehaviour
     }
 
     public void ResetAgent(){
-        contactId.RemoveAt(contactId.IndexOf(id));
+        Destroy(agent);
+        // contactId.RemoveAt(contactId.IndexOf(id));
     }
 }
