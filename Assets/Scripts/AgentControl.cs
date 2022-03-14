@@ -191,9 +191,4 @@ public class AgentControl : MonoBehaviour
             }
         }
     }
-
-    public void ResetAgent(){
-        Destroy(agent);
-        // contactId.RemoveAt(contactId.IndexOf(id));
-    }
 }

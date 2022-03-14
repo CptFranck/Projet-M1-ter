@@ -81,10 +81,12 @@ public class StatsDisplay : MonoBehaviour
 
     //Réinitialise toute la simulation
     public void ResetGame (){
-        if (agentSpawner.GetNbContacts() > 0){
-            agentSpawner.ResetListAgents();         
-        }
-        densite = 0;
-        contactMoyen = 0;
+        // if (agentSpawner.GetNbContacts() > 0){
+        //     agentSpawner.ResetListAgents();         
+        // }
+        // densite = 0;
+        timer = 0;
+        Time.timeScale = 0;
+        // contactMoyen = 0;
     }
 }
