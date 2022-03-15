@@ -25,6 +25,7 @@ public class AgentControl : MonoBehaviour
     public Vector3 oldTarget;
 
     public List<int> contactId;             // Attributs correspondant aux contacts de l'agent (list des contactes et les colliders propres à l'agent)
+    public List<int> areaId;
     public int contactBoxNumber;
     public int contactCapsuleNumber;
 
@@ -149,6 +150,7 @@ public class AgentControl : MonoBehaviour
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
+                    areaId.Add(idbis);
                     contactBoxNumber++;
                 }
                 if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
@@ -178,6 +180,7 @@ public class AgentControl : MonoBehaviour
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
+                    areaId.RemoveAt(areaId.IndexOf(idbis));
                     contactBoxNumber--;
                 }
                 if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))

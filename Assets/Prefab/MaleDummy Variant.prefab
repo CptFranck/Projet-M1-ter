@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3965587900356909096}
   - component: {fileID: 2285710103929308551}
   - component: {fileID: 109385430705568441}
-  - component: {fileID: 5257526935153500272}
+  - component: {fileID: 542067724452366176}
   m_Layer: 0
   m_Name: Caps
   m_TagString: Agent
@@ -62,7 +62,7 @@ MonoBehaviour:
   agent: {fileID: 6514882502979583774}
   type: 
   CapsuleCollider: {fileID: 2285710103929308551}
---- !u!54 &5257526935153500272
+--- !u!54 &542067724452366176
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4110590853208200580}
   - component: {fileID: 6729954229665806995}
   - component: {fileID: 4115131036020535650}
-  - component: {fileID: 7852944725185280948}
+  - component: {fileID: 1527631937905614671}
   m_Layer: 0
   m_Name: Box
   m_TagString: Agent
@@ -139,7 +139,7 @@ MonoBehaviour:
   agent: {fileID: 6514882502979583774}
   type: 
   BoxCollider: {fileID: 6729954229665806995}
---- !u!54 &7852944725185280948
+--- !u!54 &1527631937905614671
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -464,10 +464,11 @@ MonoBehaviour:
   id: 0
   state: 0
   speed: 0
-  distanceTarget: 0
   type: 
   scene: {x: 0, y: 0, z: 0}
   target: {x: 0, y: 0, z: 0}
+  oldTarget: {x: 0, y: 0, z: 0}
   contactId: 
+  areaId: 
   contactBoxNumber: 0
   contactCapsuleNumber: 0

@@ -39,7 +39,7 @@ public class StatsDisplay : MonoBehaviour
 
     public void UpdateUI(){
         //Change le texte de l'interface pour le nombre de personnes
-        nbPersonTxt.text = "Nb de personnes : " + agentSpawner.getPersonCount();
+        nbPersonTxt.text = "Nb de personnes : " + agentSpawner.GetPersonCount();
         densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(plane).ToString("f2"); //Montre deux chiffres après la virgule
         nbContactsTxt.text = "Nb de contacts en moyenne : " + CalculateContactMoyen().ToString("f2");
     }
@@ -47,13 +47,13 @@ public class StatsDisplay : MonoBehaviour
     //Fonction pour calculer la densité moyenne
     float CalculateDensity(GameObject plane){
         surface = plane.GetComponent<Renderer>().bounds.size.x * plane.GetComponent<Renderer>().bounds.size.z;
-        densite =  agentSpawner.getPersonCount() / surface;  
+        densite =  agentSpawner.GetPersonCount() / surface;  
         return densite;
     }
     
     float CalculateContactMoyen(){
-        if (agentSpawner.getPersonCount() != 0){
-            contactMoyen = (float) (agentSpawner.getNbContacts() / (float) agentSpawner.getPersonCount());
+        if (agentSpawner.GetPersonCount() != 0){
+            contactMoyen = (float) (agentSpawner.GetNbContacts() / (float) agentSpawner.GetPersonCount());
         }
         return contactMoyen;
     }
