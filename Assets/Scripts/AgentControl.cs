@@ -186,6 +186,8 @@ public class AgentControl : MonoBehaviour
     {
         if (collision.gameObject.tag == "Spawner" && state == 0)
         {
+            var elementToDelelet = collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Find(x => x.id == id);
+            collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Remove(elementToDelelet);
             Destroy(gameObject);
         }
         else if (collision.gameObject.tag == "Agent")

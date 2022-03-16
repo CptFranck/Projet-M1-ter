@@ -23,6 +23,7 @@ public class AgentSpawner : MonoBehaviour
     public AgentControl agentPrefab;        // Attribut correspondants à l'objet associés au prefab des agents
     public AgentControl agentSinger;
     public List<AgentControl> agentClone;
+    public List<AgentControl> agentCloneTodelete;
 
     //public PercentBox percentTable;
 
@@ -236,31 +237,22 @@ public class AgentSpawner : MonoBehaviour
     // changeant son �tat pour le mettre � 0 et sa distnce de stoppage (afin de permettre sa des-
     // truction au contact de la porte), puis en l'enlevant de la liste des agents cr��s
     public void DeleteAgent()
-    { 
+    {
+        Debug.Log(index);
         if (index > 0) {
-            Debug.Log("1");
             var indexbis = Random.Range(0, index);
-            var Agent = agentClone[indexbis];
-            Debug.Log("2");
             agentClone[indexbis].state = 0;
             agentClone[indexbis].target = spawnerDoor.transform.position;
             agentClone[indexbis].GetComponent<NavMeshAgent>().stoppingDistance = 0;
-            Debug.Log("3");
-            while (Agent)
-            Debug.Log("4");
-            if (agentClone.Count != 0)
-            {
-                agentClone.RemoveAt(indexbis);
-                index--;
-            }
-            Debug.Log("5");
+            agentCloneTodelete.Add(agentClone[indexbis]);  
+            agentClone.RemoveAt(indexbis);
+            index--;
         }
         else
         {
             DisplayText("You can't delete agent !");
         }
     }
-
     // Delete50Agent chercher � d�truire 50 agents en les faisant sorir de la salle, en suivant le m�me processus que DeleteAgent
     public void Delete50Agent(bool useInput = false)
     {
@@ -309,7 +301,13 @@ public class AgentSpawner : MonoBehaviour
             Destroy(agentClone[i].gameObject);
             index--;
         }
+        nb = agentCloneTodelete.Count;
+        for (int i = 0; i < nb; i++)
+        {
+            Destroy(agentCloneTodelete[i].gameObject);
+        }
         agentClone.Clear();
+        agentCloneTodelete.Clear();
     }
 
     // Getters
