@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class AgentControl : MonoBehaviour
 {
-    //public AgentControl singer;
+    public AgentControl singer;
 
     public int id;                          // Attributs correspondant aux caractéristiques générales de l'agent
     public int state;
@@ -34,6 +34,8 @@ public class AgentControl : MonoBehaviour
     void Start()
     {
         // initialisation des attributs généraux de l'agent (les points 3D étant initialisés par l'objet AgentSpawner
+        //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
+        // singer = new AgentControl;
         // id                   instantié dans AgentSpawner
         state = 1;
         // weight = 0;      
@@ -100,7 +102,7 @@ public class AgentControl : MonoBehaviour
             
             if (state == 1)                 // Si l'état de l'agent correspond à rester dans la salle alors :
             {
-                //distanceSinger = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position, singer.GetComponent<NavMeshAgent>().transform.position);
+                distanceSinger = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, singer.GetComponent<NavMeshAgent>().transform.position);
                 if (distanceSinger < 4)     // Si la distaence séparant l'agent du chanteur alors :
                 {
                     //target = singer.GetComponent<NavMeshAgent>().transform.position;

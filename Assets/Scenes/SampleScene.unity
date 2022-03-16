@@ -5342,7 +5342,7 @@ MonoBehaviour:
   flowInput: {fileID: 1628516042}
   inputNumberAgents: {fileID: 1173774316}
   agentPrefab: {fileID: 7839442615085477401, guid: ce8b078c7fb9dd940911848bf1ef4057, type: 3}
-  agentSinger: {fileID: 2932128938741633672, guid: d5179ca67db101c4593ff283b6f56def, type: 3}
+  agentSinger: {fileID: 7839442615085477401, guid: ce8b078c7fb9dd940911848bf1ef4057, type: 3}
   agentClone: []
   spawnerDoor: {fileID: 1118760506}
   spawnerScene: {fileID: 1730437260}

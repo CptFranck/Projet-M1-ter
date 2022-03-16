@@ -177,6 +177,7 @@ public class AgentSpawner : MonoBehaviour
         {
             int randNumbrer = Random.Range(0, pointOfInterest.Length);
             agentClone.Add(Instantiate(agentPrefab, spawnerDoor.transform.position, Quaternion.identity));
+            agentClone[index].singer = agentSinger;
             agentClone[index].id = id;
             agentClone[index].type = "public";
             agentClone[index].scene = pointOfInterest[randNumbrer].transform.position;
@@ -236,13 +237,23 @@ public class AgentSpawner : MonoBehaviour
     // truction au contact de la porte), puis en l'enlevant de la liste des agents cr��s
     public void DeleteAgent()
     { 
-        if (index > 0) { 
+        if (index > 0) {
+            Debug.Log("1");
             var indexbis = Random.Range(0, index);
+            var Agent = agentClone[indexbis];
+            Debug.Log("2");
             agentClone[indexbis].state = 0;
             agentClone[indexbis].target = spawnerDoor.transform.position;
             agentClone[indexbis].GetComponent<NavMeshAgent>().stoppingDistance = 0;
-            agentClone.RemoveAt(indexbis);
-            index--;
+            Debug.Log("3");
+            while (Agent)
+            Debug.Log("4");
+            if (agentClone.Count != 0)
+            {
+                agentClone.RemoveAt(indexbis);
+                index--;
+            }
+            Debug.Log("5");
         }
         else
         {
