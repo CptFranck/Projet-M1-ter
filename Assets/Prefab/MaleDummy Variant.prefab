@@ -460,15 +460,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febb323a10f01594ba667cdb928a7c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 6514882502979583774}
+  agent: {fileID: 7839442615085477401}
   id: 0
   state: 0
   speed: 0
+  distanceSinger: 0
   type: 
+  whatCanBeClickOn:
+    serializedVersion: 2
+    m_Bits: 0
   scene: {x: 0, y: 0, z: 0}
   target: {x: 0, y: 0, z: 0}
   oldTarget: {x: 0, y: 0, z: 0}
-  contactId: 
   areaId: 
+  contactId: 
   contactBoxNumber: 0
   contactCapsuleNumber: 0

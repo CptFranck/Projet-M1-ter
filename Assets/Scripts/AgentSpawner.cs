@@ -34,32 +34,49 @@ public class AgentSpawner : MonoBehaviour
     {
         // initialisation des paramètres de base du spawner
         id = 0;
-        flow = 0;
         index = 0;
         maxNumberAgent = 300;
+
+        nbTotalContacts = 0;
+
+        flow = 0;
         desiredSeparation = .5f;
+
+        // textPrefab               instantié dans Unity
+        // flowInput
+        // inputNumberAgents
+
+        // agentPrefab              instantié dans Unity
+        // agentSinger
+        agentClone = new List<AgentControl>();
+
+        // spawnerDoor              instantié dans Unity
+        // spawnerScene
+        // pointOfInterest
 
         // initialisation de l'agent chanteur ("singer") qui spawnera sur la scene et dont la destination restera sa posistion
         // percentTable = new PercentBox();
         agentSinger = Instantiate(agentPrefab, spawnerScene.transform.position, Quaternion.identity);
+        agentSinger.id = -1;
         agentSinger.type = "singer";
-        agentSinger.scene = agentSinger.transform.position;
-        agentSinger.target = agentSinger.transform.position;
-        agentSinger.GetComponent<NavMeshAgent>().SetDestination(agentSinger.target);
+        agentSinger.whatCanBeClickOn = LayerMask.GetMask("Scene");
+        agentSinger.scene = spawnerScene.transform.position;
+        agentSinger.target = spawnerScene.transform.position;
 
+        // initialisation des variables lié à l'interface
         inputNumberAgents = GameObject.Find("InputFieldAgent").GetComponent<InputField>();
         flowInput = GameObject.Find("InputFlow").GetComponent<InputField>();
 
     }    
 
     void Update(){
-         
         nbTotalContacts = 0;
         for (int i = 0; i < agentClone.Count; i++)
         {
             nbTotalContacts += agentClone[i].contactCapsuleNumber;
+            
             //boids repulsion
-
+            /*
             var found = 0;
             var average = Vector3.zero;
             //var notAlreadyReset = false;
@@ -161,10 +178,11 @@ public class AgentSpawner : MonoBehaviour
             int randNumbrer = Random.Range(0, pointOfInterest.Length);
             agentClone.Add(Instantiate(agentPrefab, spawnerDoor.transform.position, Quaternion.identity));
             agentClone[index].id = id;
-            agentClone[index].type = "public";   
+            agentClone[index].type = "public";
             agentClone[index].scene = pointOfInterest[randNumbrer].transform.position;
             agentClone[index].target = pointOfInterest[randNumbrer].transform.position;
-            agentClone[index].agent.GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(0,8);  //SelectWithPurcent(percentTable);
+            agentClone[index].GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(0,8);  //SelectWithPurcent(percentTable);
+            agentClone[index].GetComponent<NavMeshAgent>().SetDestination(agentClone[index].target);
             index++;
             id++;
         }
