@@ -132,34 +132,53 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-        // SelectWithPurcent permet l'attribution d'une distence de stoppage en fonction d'un tableau de pourcentage attribuant des
-        // poids à des probabilités
-        /*public int SelectWithPurcent(PercentBox percentTable)
-       {
-           float r;
-           int i = 0;
-
-           do
-           {
-               r = Random.value;
-           } while (r == 1 || r == 0);
-
-           while (r > 0)
-           {
-
-               r -= percentTable.percent[i];
-               i++;
-           }
-           i--;
-
-           return percentTable.stopDistence[i];
-
-       }*/
-
-        // ChangeFlow permet de changer la valeurs de flux lors de la création des agents
-        public void ChangeFlow()
+    // SelectWithPurcent permet l'attribution d'une distence de stoppage en fonction d'un tableau de pourcentage attribuant des
+    // poids à des probabilités
+    /*public int SelectWithPurcent(PercentBox percentTable)
     {
-        flow = float.Parse(flowInput.text);
+        float r;
+        int i = 0;
+
+        do
+        {
+            r = Random.value;
+        } while (r == 1 || r == 0);
+
+        while (r > 0)
+        {
+
+            r -= percentTable.percent[i];
+            i++;
+        }
+        i--;
+
+        return percentTable.stopDistence[i];
+
+    }*/
+
+    // ChangeFlow permet de changer la valeurs de flux lors de la création des agents
+    public void ChangeFlow()
+    {
+        var flowtest = 0.1f;
+        if (float.TryParse(flowInput.text, out flowtest))
+        {
+            if(flowtest < 0)
+            {
+                DisplayText("Input not valid, flow can't be lower than 0 !");
+            } else if(flowtest > 2)
+            {
+                DisplayText("Input not valid, flow can't be bigger than 2 !");
+            } else
+            {
+                DisplayText("Flow has been changed !");
+                flow = flowtest;
+            }       
+        }
+        else
+        {
+            DisplayText("Input not valid, try with a ',' and not with '.' !");
+        }
+       
     }
 
     // DisplayText permet l'affichage d'un message
@@ -183,7 +202,7 @@ public class AgentSpawner : MonoBehaviour
             agentClone[index].type = "public";
             agentClone[index].scene = pointOfInterest[randNumbrer].transform.position;
             agentClone[index].target = pointOfInterest[randNumbrer].transform.position;
-            agentClone[index].GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(0,8);  //SelectWithPurcent(percentTable);
+            agentClone[index].GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(.1f, 8);  //SelectWithPurcent(percentTable);
             agentClone[index].GetComponent<NavMeshAgent>().SetDestination(agentClone[index].target);
             index++;
             id++;
@@ -238,7 +257,6 @@ public class AgentSpawner : MonoBehaviour
     // truction au contact de la porte), puis en l'enlevant de la liste des agents cr��s
     public void DeleteAgent()
     {
-        Debug.Log(index);
         if (index > 0) {
             var indexbis = Random.Range(0, index);
             agentClone[indexbis].state = 0;

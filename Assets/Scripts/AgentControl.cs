@@ -9,17 +9,17 @@ public class AgentControl : MonoBehaviour
 
     public int id;                          // Attributs correspondant aux caractéristiques générales de l'agent
     public int state;
-    //public int weight;
     //public bool priorityChanged;
-
     public float speed;
-    //public float cooldown;
+    public float cooldown;
     //public float countdown;
-    //public float distanceTarget;
-    public float distanceSinger;
-    //public float oldDistanceTarget;
 
-    public string type;
+    public float distanceScene;             // Attributs correspondant distence liées aux agents
+    public float distanceSinger;
+    public float oldDistanceStop;
+    public bool distanceStopSaved;
+
+    public string type;                     // Attributs correspondant aux rôles des agents et leurs spécificités
     public LayerMask whatCanBeClickOn;
 
     public Vector3 scene;                   // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
@@ -37,34 +37,33 @@ public class AgentControl : MonoBehaviour
         //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
         // singer = new AgentControl;
         // id                   instantié dans AgentSpawner
-        state = 1;
-        // weight = 0;      
+        state = 1;     
         // priorityChanged = false;
 
         speed = 3.5F;
-        // cooldown = 0;
-        // countdown = 0;
-        // distanceTarget = 0;
+        cooldown = 0;
+        // countdown = 0;       brouillon
+        distanceScene = 0;
         distanceSinger = 0;
-        // oldDistanceTarget = 0;
+        oldDistanceStop = 0;
+        distanceStopSaved = true;
 
         // type                 instantié dans AgentSpawner
 
         //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
         //whatCanBeClickOn = new LayerMask();
-        //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
         //scene = new Vector3();
-        //target = new Vector3();
-        //oldTarget = new Vector3();
+
+        //target = new Vector3();       brouillon
+        //oldTarget = new Vector3();    brouillon
 
         areaId = new List<int>();
         contactId = new List<int>();
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
-
+        
         this.GetComponent<NavMeshAgent>().speed = speed;
         this.GetComponent<NavMeshAgent>().avoidancePriority = 50; //Random.Range(50, 60);
-
     }
 
     void Update()
@@ -89,27 +88,64 @@ public class AgentControl : MonoBehaviour
             }
         }
         else if (type == "public")          // Si l'agent fait partie du public alors :
-        { 
-            /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
-               agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
+        {
+            if (/*reduction_IDE*/true)
             {
-                agent.GetComponent<NavMeshAgent>().avoidancePriority = 45;
-            } 
-            else
+                //essai de fluidification du mvt de la foule par l'avoidancePriority
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
+                   agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
+                {
+                    agent.GetComponent<NavMeshAgent>().avoidancePriority = 45;
+                } 
+                else
+                {
+                    agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+                }*/
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            }
+            if (state == 0)                 // So l'agent souhaite sortir alors :
             {
-                agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
-            }*/
-            
-            if (state == 1)                 // Si l'état de l'agent correspond à rester dans la salle alors :
+                //agent.GetComponent<NavMeshAgent>().isStopped = false;
+                //this.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+            }
+            else if(state == 1)             // Si l'état de l'agent correspond à rester dans la salle alors :
             {
                 distanceSinger = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, singer.GetComponent<NavMeshAgent>().transform.position);
-                if (distanceSinger < 4)     // Si la distaence séparant l'agent du chanteur alors :
+                if (distanceSinger < 3)     // Si la distence séparant l'agent du chanteur est infèrieur à 3m, alors il le suit
                 {
-                    //target = singer.GetComponent<NavMeshAgent>().transform.position;
+                    target = singer.GetComponent<NavMeshAgent>().transform.position;
                 }
-                /*if (countdown != -1)
+                else
+                {                           // Sinon
+                    distanceScene = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, scene);
+                    if (distanceScene <= this.GetComponent<NavMeshAgent>().stoppingDistance)
+                    {                       // Si l'agent est arrivé à la distence à laquelle il peut s'arrèter ou moins alors :
+                        if (distanceStopSaved)
+                        {                   // Si sa distence d'arret n'a pas été sauvegarder alors: on l'enregistre
+                            oldDistanceStop = this.GetComponent<NavMeshAgent>().stoppingDistance;
+                            distanceStopSaved = false;
+                        }
+                        //this.GetComponent<NavMeshAgent>().avoidancePriority = 51;
+                        if (cooldown > 1f)
+                        {
+                            Dance();
+                            cooldown = 0;
+                        }
+                    }
+                    else if (cooldown > 1f)
+                    {                       // Sinon il se dirige vers la scène, comme initailemant prévu
+                        if (!distanceStopSaved)
+                        {
+                            this.GetComponent<NavMeshAgent>().stoppingDistance = oldDistanceStop;
+                            distanceStopSaved = true;
+                        }
+                        target = this.scene;  
+                    }
+                }
+                if (/*countdown != -1*/true)
                 {
-                    if (countdown == 5){
+                    /*if (countdown == 5){
                         
                         if (Mathf.Abs(oldDistanceTarget - distanceTarget) < 1)
                         {
@@ -133,36 +169,50 @@ public class AgentControl : MonoBehaviour
                             countdown++;
                             //Debug.Log("countdown : " + countdown + "s");
                         }  
-                    }
-                }*/
-            } 
-            else if (state == 0)                       // So l'agent souhaite sortir alors :
-            {
-                //agent.GetComponent<NavMeshAgent>().isStopped = false;
-                //agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+                    }*/
+                }
             }
-            /*
-            if (contactBoxNumber > 8)
-            {
-                weight = 1;
-            }
-            else
-            {
-                weight = 0;
-            }*/
 
             //agent.GetComponent<NavMeshAgent>().speed += .5F;
             //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
+            cooldown += Time.deltaTime;
         }
         
         // Modification de la vitesse en temps réel
-        this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber /*+ weight*/);
-
+        this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
         if (oldTarget != target)    // Si l'objectif de l'agent a été modifié alors : on met à jour sa destination
         {
             this.GetComponent<NavMeshAgent>().SetDestination(target);
         }
         oldTarget = target;
+        
+    }
+
+    // Dance cherche à changer l'objectif de l'agent pour ue destination situé à X mètre
+    // dans une direction aléatoire (Nd, Sd, Et, Ost) 
+    public void Dance()
+    {
+        var aléatoire = Random.Range(0, 4);
+        var distence = .5f;
+        this.target = this.GetComponent<NavMeshAgent>().transform.position;
+        switch (aléatoire)
+        {
+            case 0:
+                target.z += distence;
+                break;
+            case 1:
+                target.z -= distence;
+                break;
+            case 2:
+                target.x += distence;
+                break;
+            case 3:
+                target.x -= distence;
+                break;
+            default:
+                break;
+        }
+        this.GetComponent<NavMeshAgent>().stoppingDistance = 0;
     }
 
     // Speed cherche à renvoyer une vitesse que doit avoir un agent en fonction du
