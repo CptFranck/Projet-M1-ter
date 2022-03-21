@@ -14,10 +14,9 @@ public class AgentControl : MonoBehaviour
     public float cooldown;
     //public float countdown;
 
-    public float distanceScene;             // Attributs correspondant distence liées aux agents
+    public float distanceStop;              // Attributs correspondant distence liées aux agents
+    public float distanceScene;
     public float distanceSinger;
-    public float oldDistanceStop;
-    public bool distanceStopSaved;
 
     public string type;                     // Attributs correspondant aux rôles des agents et leurs spécificités
     public LayerMask whatCanBeClickOn;
@@ -45,8 +44,7 @@ public class AgentControl : MonoBehaviour
         // countdown = 0;       brouillon
         distanceScene = 0;
         distanceSinger = 0;
-        oldDistanceStop = 0;
-        distanceStopSaved = true;
+        distanceStop = this.GetComponent<NavMeshAgent>().stoppingDistance;
 
         // type                 instantié dans AgentSpawner
 
@@ -107,7 +105,7 @@ public class AgentControl : MonoBehaviour
             if (state == 0)                 // So l'agent souhaite sortir alors :
             {
                 //agent.GetComponent<NavMeshAgent>().isStopped = false;
-                //this.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+                this.GetComponent<NavMeshAgent>().avoidancePriority = 50;
             }
             else if(state == 1)             // Si l'état de l'agent correspond à rester dans la salle alors :
             {
@@ -119,28 +117,25 @@ public class AgentControl : MonoBehaviour
                 else
                 {                           // Sinon
                     distanceScene = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, scene);
-                    if (distanceScene <= this.GetComponent<NavMeshAgent>().stoppingDistance)
+                    if (distanceScene <= distanceStop)
                     {                       // Si l'agent est arrivé à la distence à laquelle il peut s'arrèter ou moins alors :
-                        if (distanceStopSaved)
-                        {                   // Si sa distence d'arret n'a pas été sauvegarder alors: on l'enregistre
-                            oldDistanceStop = this.GetComponent<NavMeshAgent>().stoppingDistance;
-                            distanceStopSaved = false;
-                        }
-                        //this.GetComponent<NavMeshAgent>().avoidancePriority = 51;
-                        if (cooldown > 1f)
+                        if (Vector3.Distance(this.transform.position,target) <=.1f || target == scene)
                         {
+                            this.GetComponent<NavMeshAgent>().avoidancePriority = 51;
                             Dance();
-                            cooldown = 0;
                         }
                     }
-                    else if (cooldown > 1f)
+                    else 
                     {                       // Sinon il se dirige vers la scène, comme initailemant prévu
-                        if (!distanceStopSaved)
+                        if (cooldown >1f)
                         {
-                            this.GetComponent<NavMeshAgent>().stoppingDistance = oldDistanceStop;
-                            distanceStopSaved = true;
+                            if (target != this.scene)
+                            {
+                                this.GetComponent<NavMeshAgent>().stoppingDistance = distanceStop;
+                            }
+                            target = this.scene;
+                            cooldown = 0;
                         }
-                        target = this.scene;  
                     }
                 }
                 if (/*countdown != -1*/true)
@@ -193,8 +188,8 @@ public class AgentControl : MonoBehaviour
     public void Dance()
     {
         var aléatoire = Random.Range(0, 4);
-        var distence = .5f;
-        this.target = this.GetComponent<NavMeshAgent>().transform.position;
+        var distence = .4f;
+        target = this.GetComponent<NavMeshAgent>().transform.position;
         switch (aléatoire)
         {
             case 0:
