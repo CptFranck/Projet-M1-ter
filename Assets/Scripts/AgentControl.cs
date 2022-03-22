@@ -9,10 +9,8 @@ public class AgentControl : MonoBehaviour
 
     public int id;                          // Attributs correspondant aux caractéristiques générales de l'agent
     public int state;
-    //public bool priorityChanged;
     public float speed;
     public float cooldown;
-    //public float countdown;
 
     public float distanceStop;              // Attributs correspondant distence liées aux agents
     public float distanceScene;
@@ -37,23 +35,20 @@ public class AgentControl : MonoBehaviour
         // singer = new AgentControl;
         // id                   instantié dans AgentSpawner
         state = 1;     
-        // priorityChanged = false;
-
         speed = 3.5F;
         cooldown = 0;
-        // countdown = 0;       brouillon
+
         distanceScene = 0;
         distanceSinger = 0;
         distanceStop = this.GetComponent<NavMeshAgent>().stoppingDistance;
 
         // type                 instantié dans AgentSpawner
-
         //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
         //whatCanBeClickOn = new LayerMask();
+        
         //scene = new Vector3();
-
-        //target = new Vector3();       brouillon
-        //oldTarget = new Vector3();    brouillon
+        //target = new Vector3();
+        //oldTarget = new Vector3();
 
         areaId = new List<int>();
         contactId = new List<int>();
@@ -119,7 +114,7 @@ public class AgentControl : MonoBehaviour
                     distanceScene = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, scene);
                     if (distanceScene <= distanceStop)
                     {                       // Si l'agent est arrivé à la distence à laquelle il peut s'arrèter ou moins alors :
-                        if (Vector3.Distance(this.transform.position,target) <=.1f || target == scene)
+                        if (Vector3.Distance(this.transform.position,target) <=.1f || cooldown > 3f || target == scene)
                         {
                             this.GetComponent<NavMeshAgent>().avoidancePriority = 51;
                             Dance();
@@ -187,26 +182,36 @@ public class AgentControl : MonoBehaviour
     // dans une direction aléatoire (Nd, Sd, Et, Ost) 
     public void Dance()
     {
-        var aléatoire = Random.Range(0, 4);
-        var distence = .4f;
-        target = this.GetComponent<NavMeshAgent>().transform.position;
-        switch (aléatoire)
-        {
-            case 0:
-                target.z += distence;
-                break;
-            case 1:
-                target.z -= distence;
-                break;
-            case 2:
-                target.x += distence;
-                break;
-            case 3:
-                target.x -= distence;
-                break;
-            default:
-                break;
-        }
+        var valid = false;
+        var distence = (float)Speed(contactBoxNumber);
+        target = this.GetComponent<NavMeshAgent>().transform.position; 
+        do {
+            var random = Random.Range(0, 4);    
+            switch (random)
+            {
+                case 0:
+                    target.z += distence;
+                    break;
+                case 1:
+                    target.z -= distence;
+                    break;
+                case 2:
+                    target.x += distence;
+                    break;
+                case 3:
+                    target.x -= distence;
+                    break;
+                default:
+                    break;
+            }
+            if(target.z > -11.5 && target.z < -1)
+            {
+                if (target.x > 1 && target.x < 11)
+                {
+                    valid = true;
+                }
+            }
+        } while (!valid);
         this.GetComponent<NavMeshAgent>().stoppingDistance = 0;
     }
 
