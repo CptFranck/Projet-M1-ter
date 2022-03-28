@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4336921383062302301}
   - component: {fileID: 6706512051553408524}
   - component: {fileID: -4236485662650325985}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: oneSquareMeter
   m_TagString: Untagged
   m_Icon: {fileID: 0}

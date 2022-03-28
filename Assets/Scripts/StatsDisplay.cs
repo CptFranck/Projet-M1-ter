@@ -62,14 +62,16 @@ public class StatsDisplay : MonoBehaviour
         if(Input.GetButtonDown("Statistics")){
             panelStats.SetActive(!panelStats.activeSelf);
         }
-        GetEachMeter();
+
         //update toujours l'interface
         UpdateUI();
+        //Affiche la densité sur la carte
+        GetEachMeter();
         //Réinitialisation des valeurs à chaque frame
+        densityInSquare = 0;
         // foreach (MapControl cube in cubeList){
         //     cube.SetContacts(0);
         // }
-        densityInSquare = 0;
         // Array.Clear(nbOfAgentsInSquare, 0, nbOfAgentsInSquare.Length);
         // i = 0;
     }
@@ -163,10 +165,11 @@ public class StatsDisplay : MonoBehaviour
             return new Color(0.517f, 0.933f, 0.534f); //vert
         }else if(gradientDensity > 2 && gradientDensity <= 3){
             return new Color(0.933f, 0.933f, 0.497f); //jaune
-        }else if(gradientDensity > 3 && gradientDensity <= 4){
-            return new Color(0.241f, 0.193f, 0.137f); //orange
+        }else if(gradientDensity > 3 && gradientDensity <= 5){
+            Debug.Log("orange");
+            return new Color(1, 0.607f, 0.410f); //orange
         }else if(gradientDensity > 5){
-            return new Color(0.251f, 0.121f, 0.106f); //rouge
+            return new Color(1, 0.212f, 0.212f); //rouge
         }
         return new Color(0.435f, 0.435f, 0.435f); // gris par défaut
     }
