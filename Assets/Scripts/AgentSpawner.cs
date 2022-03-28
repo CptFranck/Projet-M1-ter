@@ -233,13 +233,17 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-    public void ResetListAgents(){
-        // for (int i = 0; i < index; i++){
-        //     agentClone[i].ResetAgent();
-        // }
-        // index = 0;
-        // nbTotalContacts = 0;
-        // nbAgentInAsphyxiaDanger = 0;
+public void ResetAllAgents()
+    {
+        var nb = agentClone.Count;
+        Debug.Log(nb);
+        for (int i = 0; i < nb; i++)
+        {
+
+            Destroy(agentClone[i].gameObject);
+            index--;
+        }
+        agentClone.Clear();
     }
 
     //GETTERS
