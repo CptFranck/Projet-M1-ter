@@ -7,10 +7,11 @@ using UnityEngine.UI;
 
 public class AgentSpawner : MonoBehaviour
 {
-    public int id;                          // Attribut correspondant à l'attribution des id de manière unique
+    public int id;                          // Attribut correspondant à l'attribution des ids de manière unique
     public int index;                       // Attributs correspondant aux informations générales des agents
     public int maxNumberAgent;
 
+    public PercentBox percentBox;
     private int nbTotalContacts;
 
     public float flow;                      // Attribut correspondant au flux d'agent lors de leur création
@@ -21,14 +22,17 @@ public class AgentSpawner : MonoBehaviour
     public InputField inputNumberAgents;
 
     public AgentControl agentPrefab;        // Attribut correspondants à l'objet associés au prefab des agents
+    public AgentControl agentBarman;
     public AgentControl agentSinger;
-    public List<AgentControl> agentClone;
+    public List<AgentControl> agentClone;   // Attribut correspondants au stockage mémoire des agents
+    public List<AgentControl> agentCloneToilet;
     public List<AgentControl> agentCloneTodelete;
 
-    //public PercentBox percentTable;
-
-    public GameObject spawnerDoor;          // Attributs correspondants aux point 3D pour les différentes destinations
+    public GameObject barZone;           // Attributs correspondants aux point 3D pour les différentes destinations
+    public GameObject toiletZone;
+    public GameObject spawnerDoor;          
     public GameObject spawnerScene;
+ 
     public GameObject[] pointOfInterest;
     
     void Start()
@@ -38,6 +42,7 @@ public class AgentSpawner : MonoBehaviour
         index = 0;
         maxNumberAgent = 300;
 
+        percentBox = new PercentBox();
         nbTotalContacts = 0;
 
         flow = 0;
@@ -47,27 +52,34 @@ public class AgentSpawner : MonoBehaviour
         // flowInput
         // inputNumberAgents
 
+        // initialisation des variables lié à l'interface
+        flowInput = GameObject.Find("InputFlow").GetComponent<InputField>();
+        inputNumberAgents = GameObject.Find("InputFieldAgent").GetComponent<InputField>();
+
         // agentPrefab              instantié dans Unity
         // agentSinger
         agentClone = new List<AgentControl>();
+        agentCloneToilet = new List<AgentControl>();
+
 
         // spawnerDoor              instantié dans Unity
         // spawnerScene
         // pointOfInterest
 
         // initialisation de l'agent chanteur ("singer") qui spawnera sur la scene et dont la destination restera sa posistion
-        // percentTable = new PercentBox();
         agentSinger = Instantiate(agentPrefab, spawnerScene.transform.position, Quaternion.identity);
         agentSinger.id = -1;
         agentSinger.type = "singer";
         agentSinger.whatCanBeClickOn = LayerMask.GetMask("Scene");
+        agentSinger.bar = new Vector3();
         agentSinger.scene = spawnerScene.transform.position;
+        agentSinger.toilet = toiletZone.transform.position;
         agentSinger.target = spawnerScene.transform.position;
 
-        // initialisation des variables lié à l'interface
-        inputNumberAgents = GameObject.Find("InputFieldAgent").GetComponent<InputField>();
-        flowInput = GameObject.Find("InputFlow").GetComponent<InputField>();
-
+        // initialisation de l'agent barman ("singer") qui spawnera sur la scene et dont la destination restera sa posistion
+        agentBarman = Instantiate(agentPrefab, barZone.transform.position, Quaternion.identity);
+        agentBarman.id = -2;
+        agentBarman.type = "barman";
     }    
 
     void Update(){
@@ -75,39 +87,45 @@ public class AgentSpawner : MonoBehaviour
         for (int i = 0; i < agentClone.Count; i++)
         {
             nbTotalContacts += agentClone[i].contactCapsuleNumber;
-            
+            if(agentClone[i].eventCode== 0)
+            {
+                agentClone[i].eventCode = SelectWithPurcent(percentBox);
+            }
             //boids repulsion
-            /*
-            var found = 0;
-            var average = Vector3.zero;
-            //var notAlreadyReset = false;
-            for (int j = 0; j < agentClone[i].areaId.Count; j++)
+            if (true/*reduction_IDE*/)
             {
-               var distence = agentClone[i].GetComponent<Transform>().position - agentClone[agentClone[i].areaId[j]].GetComponent<Transform>().position;
-                if(desiredSeparation > distence.magnitude)
+                /*
+                var found = 0;
+                var average = Vector3.zero;
+                //var notAlreadyReset = false;
+                for (int j = 0; j < agentClone[i].areaId.Count; j++)
                 {
-                    average += distence;
-                    found++;
+                   var distence = agentClone[i].GetComponent<Transform>().position - agentClone[agentClone[i].areaId[j]].GetComponent<Transform>().position;
+                    if(desiredSeparation > distence.magnitude)
+                    {
+                        average += distence;
+                        found++;
+                    }
                 }
+                if (found > 0)
+                {
+                    average /= (found* agentClone[i].GetComponent<NavMeshAgent>().speed);
+                    //agentClone[i].gameObject.transform.position = Vector3.Lerp(transform.localPosition, average, Time.deltaTime / totalRunningTime);
+                    agentClone[i].gameObject.transform.position += (average*0.07f);
+                    //StartCoroutine(AddForceBis(i , average));
+                }/*
+
+                    agentClone[i].GetComponent<Rigidbody>().AddForce(average);
+                    agentClone[i].GetComponentInChildren<Rigidbody>().AddForce(average);
+                    notAlreadyReset = true;
+                }
+                else 
+                if(notAlreadyReset){
+                    notAlreadyReset = true;
+                    agentClone[i].GetComponent<Rigidbody>().velocity = agentPrefab.GetComponent<Rigidbody>().velocity;
+                    agentClone[i].GetComponentInChildren<Rigidbody>().velocity = agentPrefab.GetComponentInChildren<Rigidbody>().velocity;
+                }*/
             }
-            if (found > 0)
-            {
-                average /= (found* agentClone[i].GetComponent<NavMeshAgent>().speed);
-                //agentClone[i].gameObject.transform.position = Vector3.Lerp(transform.localPosition, average, Time.deltaTime / totalRunningTime);
-                agentClone[i].gameObject.transform.position += (average*0.07f);
-                //StartCoroutine(AddForceBis(i , average));
-            }/*
-                
-                agentClone[i].GetComponent<Rigidbody>().AddForce(average);
-                agentClone[i].GetComponentInChildren<Rigidbody>().AddForce(average);
-                notAlreadyReset = true;
-            }
-            else 
-            if(notAlreadyReset){
-                notAlreadyReset = true;
-                agentClone[i].GetComponent<Rigidbody>().velocity = agentPrefab.GetComponent<Rigidbody>().velocity;
-                agentClone[i].GetComponentInChildren<Rigidbody>().velocity = agentPrefab.GetComponentInChildren<Rigidbody>().velocity;
-            }*/
         }
     }
     
@@ -134,7 +152,7 @@ public class AgentSpawner : MonoBehaviour
 
     // SelectWithPurcent permet l'attribution d'une distence de stoppage en fonction d'un tableau de pourcentage attribuant des
     // poids à des probabilités
-    /*public int SelectWithPurcent(PercentBox percentTable)
+    public int SelectWithPurcent(PercentBox percentTable)
     {
         float r;
         int i = 0;
@@ -146,15 +164,14 @@ public class AgentSpawner : MonoBehaviour
 
         while (r > 0)
         {
-
             r -= percentTable.percent[i];
             i++;
         }
         i--;
 
-        return percentTable.stopDistence[i];
+        return percentTable.eventCode[i];
 
-    }*/
+    }
 
     // ChangeFlow permet de changer la valeurs de flux lors de la création des agents
     public void ChangeFlow()
@@ -200,9 +217,11 @@ public class AgentSpawner : MonoBehaviour
             agentClone[index].singer = agentSinger;
             agentClone[index].id = id;
             agentClone[index].type = "public";
+            agentClone[index].bar = agentBarman.transform.position;
+            agentClone[index].toilet = toiletZone.transform.position;
             agentClone[index].scene = pointOfInterest[randNumbrer].transform.position;
             agentClone[index].target = pointOfInterest[randNumbrer].transform.position;
-            agentClone[index].GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(.1f, 8);  //SelectWithPurcent(percentTable);
+            agentClone[index].GetComponent<NavMeshAgent>().stoppingDistance = Random.Range(.1f, 8);
             agentClone[index].GetComponent<NavMeshAgent>().SetDestination(agentClone[index].target);
             index++;
             id++;
@@ -271,6 +290,7 @@ public class AgentSpawner : MonoBehaviour
             DisplayText("You can't delete agent !");
         }
     }
+
     // Delete50Agent chercher � d�truire 50 agents en les faisant sorir de la salle, en suivant le m�me processus que DeleteAgent
     public void Delete50Agent(bool useInput = false)
     {
@@ -289,7 +309,6 @@ public class AgentSpawner : MonoBehaviour
     {
         Delete50Agent(true);
     }
-
     public IEnumerator WaitDeleteAgent(int nbAgentsAdded = 50)
     {
         var oneTime = true;
@@ -311,6 +330,7 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
+    // ResetAllAgent permet de supprimet tout les agents peu importe leur état et leur situation
     public void ResetAllAgents()
     {
         var nb = agentClone.Count;

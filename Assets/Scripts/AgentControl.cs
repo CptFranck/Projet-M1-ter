@@ -9,6 +9,7 @@ public class AgentControl : MonoBehaviour
 
     public int id;                          // Attributs correspondant aux caractéristiques générales de l'agent
     public int state;
+    public int eventCode;
     public float speed;
     public float cooldown;
 
@@ -19,8 +20,10 @@ public class AgentControl : MonoBehaviour
     public string type;                     // Attributs correspondant aux rôles des agents et leurs spécificités
     public LayerMask whatCanBeClickOn;
 
-    public Vector3 scene;                   // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
+    public Vector3 bar;                     // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
+    public Vector3 scene;
     public Vector3 target;
+    public Vector3 toilet;
     public Vector3 oldTarget;
 
     public List<int> areaId;                // Attributs correspondant aux contacts de l'agent (list des contactes et les colliders propres à l'agent)
@@ -34,7 +37,8 @@ public class AgentControl : MonoBehaviour
         //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
         // singer = new AgentControl;
         // id                   instantié dans AgentSpawner
-        state = 1;     
+        state = 1;
+        eventCode = 0;
         speed = 3.5F;
         cooldown = 0;
 
@@ -45,7 +49,8 @@ public class AgentControl : MonoBehaviour
         // type                 instantié dans AgentSpawner
         //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
         //whatCanBeClickOn = new LayerMask();
-        
+
+        //bar = new Vector3();
         //scene = new Vector3();
         //target = new Vector3();
         //oldTarget = new Vector3();
@@ -63,22 +68,16 @@ public class AgentControl : MonoBehaviour
     {
         if (type == "singer")               // Si l'agent est le chanteur alors :
         {
-            if (state == 1)                 // Si l'état de l'agent correspond à celui d'être actif alors il peut bouger ou l'on clik avec la souris 
-            {  
-                if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo, 100, whatCanBeClickOn))
                 {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hitInfo;
-                    if (Physics.Raycast(ray, out hitInfo, 100, whatCanBeClickOn))
-                    {
-                        target = hitInfo.point;
-                    }
+                    target = hitInfo.point;
                 }
             }
-            else if (state == 0)            // Si l'état de l'agent correspond à celui d'être actif alors il retourne à ça place initiale
-            {
-                target = scene;
-            }
+
         }
         else if (type == "public")          // Si l'agent fait partie du public alors :
         {
@@ -182,36 +181,28 @@ public class AgentControl : MonoBehaviour
     // dans une direction aléatoire (Nd, Sd, Et, Ost) 
     public void Dance()
     {
-        var valid = false;
         var distence = (float)Speed(contactBoxNumber);
         target = this.GetComponent<NavMeshAgent>().transform.position; 
-        do {
-            var random = Random.Range(0, 4);    
-            switch (random)
-            {
-                case 0:
-                    target.z += distence;
-                    break;
-                case 1:
-                    target.z -= distence;
-                    break;
-                case 2:
-                    target.x += distence;
-                    break;
-                case 3:
-                    target.x -= distence;
-                    break;
-                default:
-                    break;
-            }
-            if(target.z > -11.5 && target.z < -1)
-            {
-                if (target.x > 1 && target.x < 11)
-                {
-                    valid = true;
-                }
-            }
-        } while (!valid);
+
+        var random = Random.Range(0, 4);    
+        switch (random)
+        {
+            case 0:
+                target.z += distence;
+                break;
+            case 1:
+                target.z -= distence;
+                break;
+            case 2:
+                target.x += distence;
+                break;
+            case 3:
+                target.x -= distence;
+                break;
+            default:
+                break;
+        }
+
         this.GetComponent<NavMeshAgent>().stoppingDistance = 0;
     }
 
@@ -236,9 +227,14 @@ public class AgentControl : MonoBehaviour
     {
         if (collision.gameObject.tag == "Spawner" && state == 0)
         {
-            var elementToDelelet = collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Find(x => x.id == id);
-            collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Remove(elementToDelelet);
-            Destroy(gameObject);
+            try
+            {
+                var elementToDelelet = collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Find(x => x.id == id);
+                collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Remove(elementToDelelet);
+                Destroy(gameObject);
+            } catch {
+                Debug.Log(collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete);
+            }
         }
         else if (collision.gameObject.tag == "Agent")
         {
