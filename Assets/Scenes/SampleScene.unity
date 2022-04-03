@@ -3775,18 +3775,12 @@ MonoBehaviour:
   index: 0
   maxNumberAgent: 0
   flow: 0
-  desiredSeparation: 0
-  textPrefab: {fileID: 6432565757343242184, guid: eb17a1d4a1a93ad48bf8a1de74d065f9, type: 3}
+  textPrefab: {fileID: 0}
   flowInput: {fileID: 1628516042}
   inputNumberAgents: {fileID: 1173774316}
   agentPrefab: {fileID: 7839442615085477401, guid: ce8b078c7fb9dd940911848bf1ef4057, type: 3}
-  agentBarman: {fileID: 7839442615085477401, guid: ce8b078c7fb9dd940911848bf1ef4057, type: 3}
   agentSinger: {fileID: 2932128938741633672, guid: d5179ca67db101c4593ff283b6f56def, type: 3}
   agentClone: []
-  agentCloneToilet: []
-  agentCloneTodelete: []
-  barZone: {fileID: 0}
-  toiletZone: {fileID: 0}
   spawnerDoor: {fileID: 1118760506}
   spawnerScene: {fileID: 1730437260}
   pointOfInterest:
