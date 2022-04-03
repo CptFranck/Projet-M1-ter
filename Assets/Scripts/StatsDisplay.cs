@@ -4,6 +4,9 @@ using System;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
 
 public class StatsDisplay : MonoBehaviour
 {
@@ -12,11 +15,11 @@ public class StatsDisplay : MonoBehaviour
     private float surface;
     private float densite;
     private float contactMoyen;
-    private int densityInSquare;
     private Vector3[] coordinates;
     private BoxCollider boxCollider;
     private List<MapControl> cubeList;
     // private string[,] nbOfAgentsInSquare;
+    // private int densityInSquare;
     // private int i;
 
     public Text timerTxt;
@@ -41,14 +44,20 @@ public class StatsDisplay : MonoBehaviour
         surface = 0;
         densite = 0f;
         contactMoyen = 0;
-        densityInSquare = 0;
         panelStats.SetActive(true);
         cubeList = new List<MapControl>();
-        // nbOfAgentsInSquare = new string[100,2];
         boxCollider = GetComponent<BoxCollider>();
         coordinates = plane.GetComponent<MeshFilter>().sharedMesh.vertices;
         agentSpawner = GameObject.FindObjectOfType(typeof(AgentSpawner)) as AgentSpawner;
+        // nbOfAgentsInSquare = new string[100,2];
+        // densityInSquare = 0;
+        
+        //Créer un cube pour chaque m² de la surface
         CreateDensityMap();
+
+        //Met à jour l'interface visuelle toutes les secondes
+        InvokeRepeating("UpdateUI", 1f, 1f);
+        // InvokeRepeating("GetEachMeter", 1f, .05f);
     }
 
     // Update is called once per frame
@@ -63,12 +72,11 @@ public class StatsDisplay : MonoBehaviour
             panelStats.SetActive(!panelStats.activeSelf);
         }
 
-        //update toujours l'interface
-        UpdateUI();
         //Affiche la densité sur la carte
         GetEachMeter();
+
         //Réinitialisation des valeurs à chaque frame
-        densityInSquare = 0;
+        // densityInSquare = 0;
         // foreach (MapControl cube in cubeList){
         //     cube.SetContacts(0);
         // }
@@ -76,7 +84,9 @@ public class StatsDisplay : MonoBehaviour
         // i = 0;
     }
 
-    public void UpdateUI(){
+    //Fonction qui update les données sur l'interface visuelle
+    void UpdateUI(){
+        
         //Change le texte de l'interface pour le nombre de personnes
         nbPersonTxt.text = "Nb de personnes : " + agentSpawner.GetPersonCount();
         densiteTxt.text = "Nombre de personnes par m² : " + CalculateDensity(plane).ToString("f2"); //Montre deux chiffres après la virgule
@@ -111,14 +121,20 @@ public class StatsDisplay : MonoBehaviour
 
     //Réinitialise toute la simulation
     void ResetGame (){
-        if (agentSpawner.GetNbContacts() > 0){
-            agentSpawner.ResetAllAgents();         
-        }
         densite = 0;
         timer = 0;
         Time.timeScale = 0;
         contactMoyen = 0;
+        foreach (MapControl cube in cubeList){
+            cube.SetContacts(0);     
+            cube.GetComponent<MeshRenderer>().material.SetColor("_Color", GradientDensity(cube.GetContacts()));
+        }
+        if (agentSpawner.GetNbContacts() > 0){
+            agentSpawner.ResetAllAgents();         
+        }
+
     }
+
     //Fonction qui permet de récupérer la position de chaque mètre carré du sol
     void CreateDensityMap(){
         //Parcours tous les mètre carré de la carte
@@ -150,14 +166,15 @@ public class StatsDisplay : MonoBehaviour
             // i++;
         // }
     }
+
+    //Change la couleur du sol pour chaque cube en fonction de la densité
     void GetEachMeter(){
-        foreach (MapControl cube in cubeList){
-            // Debug.Log("id : " + cube.GetId() + " contacts : " + cube.GetContacts());
-            
+        foreach (MapControl cube in cubeList){            
             //Change la couleur du cube en fonction de la densité de celui-ci
-            cube.GetComponent<MeshRenderer>().material.SetColor("_Color",GradientDensity(cube.GetContacts()));
+            cube.GetComponent<MeshRenderer>().material.SetColor("_Color", GradientDensity(cube.GetContacts()));
         }
     }
+
     //Change la couleur du sol en fonction de la densité
     Color GradientDensity(float gradientDensity){
         if (gradientDensity > 0 && gradientDensity <= 2){
@@ -166,11 +183,29 @@ public class StatsDisplay : MonoBehaviour
         }else if(gradientDensity > 2 && gradientDensity <= 3){
             return new Color(0.933f, 0.933f, 0.497f); //jaune
         }else if(gradientDensity > 3 && gradientDensity <= 5){
-            Debug.Log("orange");
             return new Color(1, 0.607f, 0.410f); //orange
-        }else if(gradientDensity > 5){
+        }else if(gradientDensity > 5 && gradientDensity <= 8){
             return new Color(1, 0.212f, 0.212f); //rouge
+        }else if(gradientDensity > 7){
+            return new Color(0.245f, 0.128f, 0.128f); //noir
         }
         return new Color(0.435f, 0.435f, 0.435f); // gris par défaut
+    }
+
+    //Fonction permettant de sauvegarder des données à un temps t
+    //Ce n'est qu'un début d'étude, cela pourrait être un point à continuer
+    public void SaveFile(){
+        Debug.Log("Saved");
+        string destination = Application.persistentDataPath + "/save.dat";
+        Debug.Log(destination);
+        FileStream file;
+ 
+        if(File.Exists(destination)) file = File.OpenWrite(destination);
+        else file = File.Create(destination);
+ 
+        SaveDatas data = new SaveDatas(timer, agentSpawner.GetPersonCount(), CalculateDensity(plane).ToString("f2"), CalculateContactMoyen().ToString("f2"), agentSpawner.GetNbContactsInBox());
+        BinaryFormatter bf = new BinaryFormatter();
+        bf.Serialize(file, data);
+        file.Close();
     }
 }

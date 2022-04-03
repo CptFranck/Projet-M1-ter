@@ -19,7 +19,7 @@ public class AgentControl : MonoBehaviour
     //public float oldDistanceTarget;
 
     public string type;
-    
+
     public Vector3 scene;                   // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
     public Vector3 target;
     public Vector3 oldTarget;
