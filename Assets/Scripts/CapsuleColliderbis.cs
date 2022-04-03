@@ -29,7 +29,10 @@ public class CapsuleColliderbis : MonoBehaviour
     {
         agent.GetComponent<AgentControl>().TriggerEnter(collision, type);
     }
-
+    private void OnTriggerStay(Collider collision)
+    {
+        agent.GetComponent<AgentControl>().TriggerEnter(collision, type);
+    }
     private void OnTriggerExit(Collider collision)
     {
         agent.GetComponent<AgentControl>().TriggerExit(collision, type);

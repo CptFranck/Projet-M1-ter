@@ -5,65 +5,136 @@ using UnityEngine.AI;
 
 public class AgentControl : MonoBehaviour
 {
-    public GameObject agent;                // Attribut correspondant au prefab correspondant à l'agent
+    public AgentControl singer;
 
     public int id;                          // Attributs correspondant aux caractéristiques générales de l'agent
     public int state;
-    //public int weight;
-    //public bool priorityChanged;
-
+    public int eventCode;
     public float speed;
-    //public float cooldown;
-    //public float countdown;
-    //public float distanceTarget;
-    //public float oldDistanceTarget;
+    public float cooldown;
 
-    public string type;
-    
-    public Vector3 scene;                   // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
+    public float distanceStop;              // Attributs correspondant distence liées aux agents
+    public float distanceScene;
+    public float distanceSinger;
+
+    public string type;                     // Attributs correspondant aux rôles des agents et leurs spécificités
+    public LayerMask whatCanBeClickOn;
+
+    public Vector3 bar;                     // Attributs correspondant aux points 3d utilisés pour l'orientation de l'agent
+    public Vector3 scene;
     public Vector3 target;
+    public Vector3 toilet;
     public Vector3 oldTarget;
 
-    public List<int> contactId;             // Attributs correspondant aux contacts de l'agent (list des contactes et les colliders propres à l'agent)
+    public List<int> areaId;                // Attributs correspondant aux contacts de l'agent (list des contactes et les colliders propres à l'agent)
+    public List<int> contactId; 
     public int contactBoxNumber;
     public int contactCapsuleNumber;
 
     void Start()
     {
-        // initialisation des attributs généraux de l'agent (les points 3D étant initialisé par l'objet AgentSpawner
+        // initialisation des attributs généraux de l'agent (les points 3D étant initialisés par l'objet AgentSpawner
+        //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
+        // singer = new AgentControl;
+        // id                   instantié dans AgentSpawner
         state = 1;
-        //weight = 0;
-        //cooldown = 0;
-        //countdown = 0;
-        //oldDistanceTarget = 0;
-        //priorityChanged = false;
+        eventCode = 0;
         speed = 3.5F;
+        cooldown = 0;
+
+        distanceScene = 0;
+        distanceSinger = 0;
+        distanceStop = this.GetComponent<NavMeshAgent>().stoppingDistance;
+
+        // type                 instantié dans AgentSpawner
+        //                      non intencié cat Start est appelé après Instantiate() dans AgentSpawner
+        //whatCanBeClickOn = new LayerMask();
+
+        //bar = new Vector3();
+        //scene = new Vector3();
+        //target = new Vector3();
+        //oldTarget = new Vector3();
+
+        areaId = new List<int>();
+        contactId = new List<int>();
         contactBoxNumber = 0;
         contactCapsuleNumber = 0;
-        agent.GetComponent<NavMeshAgent>().speed = speed;
-        agent.GetComponent<NavMeshAgent>().avoidancePriority = 50; //Random.Range(50, 60);
+        
+        this.GetComponent<NavMeshAgent>().speed = speed;
+        this.GetComponent<NavMeshAgent>().avoidancePriority = 50; //Random.Range(50, 60);
     }
 
     void Update()
     {
-        if (type == "public")           // Si l'agent fait partie du public alors :
-        { 
-            /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
-               agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
+        if (type == "singer")               // Si l'agent est le chanteur alors :
+        {
+            if (Input.GetMouseButtonDown(0))
             {
-                agent.GetComponent<NavMeshAgent>().avoidancePriority = 45;
-            } 
-            else
-            {
-                agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
-            }*/
-            
-            if(state == 1)              // Si l'état de l'agent correspond à rester dans la salle alors :
-            {
-                //distanceTarget = Vector3.Distance(agent.GetComponent<NavMeshAgent>().transform.position, target);
-                /*if (countdown != -1)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo, 100, whatCanBeClickOn))
                 {
-                    if (countdown == 5){
+                    target = hitInfo.point;
+                }
+            }
+
+        }
+        else if (type == "public")          // Si l'agent fait partie du public alors :
+        {
+            if (/*reduction_IDE*/true)
+            {
+                //essai de fluidification du mvt de la foule par l'avoidancePriority
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /*if(agent.GetComponent<NavMeshAgent>().stoppingDistance > 1 && distanceTarget > agent.GetComponent<NavMeshAgent>().stoppingDistance &&
+                   agent.GetComponent<NavMeshAgent>().stoppingDistance < 6)
+                {
+                    agent.GetComponent<NavMeshAgent>().avoidancePriority = 45;
+                } 
+                else
+                {
+                    agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+                }*/
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            }
+            if (state == 0)                 // So l'agent souhaite sortir alors :
+            {
+                //agent.GetComponent<NavMeshAgent>().isStopped = false;
+                this.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+            }
+            else if(state == 1)             // Si l'état de l'agent correspond à rester dans la salle alors :
+            {
+                distanceSinger = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, singer.GetComponent<NavMeshAgent>().transform.position);
+                if (distanceSinger < 3)     // Si la distence séparant l'agent du chanteur est infèrieur à 3m, alors il le suit
+                {
+                    target = singer.GetComponent<NavMeshAgent>().transform.position;
+                }
+                else
+                {                           // Sinon
+                    distanceScene = Vector3.Distance(this.GetComponent<NavMeshAgent>().transform.position, scene);
+                    if (distanceScene <= distanceStop)
+                    {                       // Si l'agent est arrivé à la distence à laquelle il peut s'arrèter ou moins alors :
+                        if (Vector3.Distance(this.transform.position,target) <=.1f || cooldown > 3f || target == scene)
+                        {
+                            this.GetComponent<NavMeshAgent>().avoidancePriority = 51;
+                            Dance();
+                        }
+                    }
+                    else 
+                    {                       // Sinon il se dirige vers la scène, comme initailemant prévu
+                        if (cooldown >1f)
+                        {
+                            if (target != this.scene)
+                            {
+                                this.GetComponent<NavMeshAgent>().stoppingDistance = distanceStop;
+                            }
+                            target = this.scene;
+                            cooldown = 0;
+                        }
+                    }
+                }
+                if (/*countdown != -1*/true)
+                {
+                    /*if (countdown == 5){
                         
                         if (Mathf.Abs(oldDistanceTarget - distanceTarget) < 1)
                         {
@@ -87,36 +158,52 @@ public class AgentControl : MonoBehaviour
                             countdown++;
                             //Debug.Log("countdown : " + countdown + "s");
                         }  
-                    }
-                }*/
-            } 
-            else                        // So l'agent souhaite sortir alors :
-            {
-                //agent.GetComponent<NavMeshAgent>().isStopped = false;
-                //agent.GetComponent<NavMeshAgent>().avoidancePriority = 50;
+                    }*/
+                }
             }
-            /*
-            if (contactBoxNumber > 8)
-            {
-                weight = 1;
-            }
-            else
-            {
-                weight = 0;
-            }*/
-
-            // Modification de la vitesse en temps réel
-            agent.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber /*+ weight*/);
-
-            if (oldTarget != target)    // Si l'objectif de l'agent a été modifié alors : on met à jour sa destination
-            {
-                agent.GetComponent<NavMeshAgent>().SetDestination(target); 
-            }
-            oldTarget = target;
 
             //agent.GetComponent<NavMeshAgent>().speed += .5F;
             //agent.GetComponent<NavMeshAgent>().radius = (float)(1.28*Mathf.Exp(distanceTarget - 10) + 0.22);
+            cooldown += Time.deltaTime;
         }
+        
+        // Modification de la vitesse en temps réel
+        this.GetComponent<NavMeshAgent>().speed = (float)Speed(contactCapsuleNumber);
+        if (oldTarget != target)    // Si l'objectif de l'agent a été modifié alors : on met à jour sa destination
+        {
+            this.GetComponent<NavMeshAgent>().SetDestination(target);
+        }
+        oldTarget = target;
+        
+    }
+
+    // Dance cherche à changer l'objectif de l'agent pour ue destination situé à X mètre
+    // dans une direction aléatoire (Nd, Sd, Et, Ost) 
+    public void Dance()
+    {
+        var distence = (float)Speed(contactBoxNumber);
+        target = this.GetComponent<NavMeshAgent>().transform.position; 
+
+        var random = Random.Range(0, 4);    
+        switch (random)
+        {
+            case 0:
+                target.z += distence;
+                break;
+            case 1:
+                target.z -= distence;
+                break;
+            case 2:
+                target.x += distence;
+                break;
+            case 3:
+                target.x -= distence;
+                break;
+            default:
+                break;
+        }
+
+        this.GetComponent<NavMeshAgent>().stoppingDistance = 0;
     }
 
     // Speed cherche à renvoyer une vitesse que doit avoir un agent en fonction du
@@ -140,7 +227,14 @@ public class AgentControl : MonoBehaviour
     {
         if (collision.gameObject.tag == "Spawner" && state == 0)
         {
-            Destroy(gameObject);
+            try
+            {
+                var elementToDelelet = collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Find(x => x.id == id);
+                collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete.Remove(elementToDelelet);
+                Destroy(gameObject);
+            } catch {
+                Debug.Log(collision.gameObject.GetComponent<AgentSpawner>().agentCloneTodelete);
+            }
         }
         else if (collision.gameObject.tag == "Agent")
         {
@@ -149,6 +243,7 @@ public class AgentControl : MonoBehaviour
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
+                    areaId.Add(idbis);
                     contactBoxNumber++;
                 }
                 if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
@@ -178,6 +273,7 @@ public class AgentControl : MonoBehaviour
             {
                 if (type == "Box" && collision.GetType() == typeof(CapsuleCollider))
                 {
+                    areaId.RemoveAt(areaId.IndexOf(idbis));
                     contactBoxNumber--;
                 }
                 if (type == "Caps" && collision.GetType() == typeof(CapsuleCollider))
