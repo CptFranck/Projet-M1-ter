@@ -57,7 +57,7 @@ public class StatsDisplay : MonoBehaviour
 
         //Met à jour l'interface visuelle toutes les secondes
         InvokeRepeating("UpdateUI", 1f, 1f);
-        // InvokeRepeating("GetEachMeter", 1f, .05f);
+        InvokeRepeating("GetEachMeter", 1f, .15f);
     }
 
     // Update is called once per frame
@@ -73,7 +73,7 @@ public class StatsDisplay : MonoBehaviour
         }
 
         //Affiche la densité sur la carte
-        GetEachMeter();
+        // GetEachMeter();
 
         //Réinitialisation des valeurs à chaque frame
         // densityInSquare = 0;

@@ -87,9 +87,13 @@ public class AgentSpawner : MonoBehaviour
     void Update(){
         //reset à chaque frame pour avoir une mise à jour toute les frames 
         nbTotalContacts = 0;
+        nbAgentInAsphyxiaDanger = 0;
         for (int i = 0; i < agentClone.Count; i++)
         {
             nbTotalContacts += agentClone[i].contactCapsuleNumber;
+            if (agentClone[i].contactBoxNumber > 8){
+                nbAgentInAsphyxiaDanger++;
+            }
             if(agentClone[i].eventCode== 0)
             {
                 agentClone[i].eventCode = SelectWithPurcent(percentBox);
